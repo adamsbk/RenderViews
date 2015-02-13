@@ -14,13 +14,20 @@
     self.initCalls.push(function () {
         window.console&&console.log('Just loaded');
         $(domQuery).text("Just loaded the graph renderer.");
+        
+        //na vypisanie stromu po kliku, pretoze SeedWidgets.Instances()[0] je undefined pri prvom updateCalls
+        document.addEventListener('click', this.onDocumentClick, false);
     });
     
     self.updateCalls.push(function () {
         window.console&&console.log('updated');
+    });
+    
+    self.onDocumentClick = function onDocumentClick( event ) {
+        window.console&&console.log('click bubbled');
         var root = SeedWidgets.Instances()[0].GetShape(0);
         self.WriteDirectoryTree(root, '');
-    });
+    }
     
     self.WriteDirectoryTree = function (node, spaces) {
         $(domQuery).text(spaces + node.id);
