@@ -21,12 +21,13 @@
     
     self.onDocumentClick = function onDocumentClick( event ) {
         window.console&&console.log('click bubbled');
+        $(domQuery).html('');
         var root = SeedWidgets.Instances()[0].GetShape(0);
         self.WriteDirectoryTree(root, '');
     }
     
     self.WriteDirectoryTree = function (node, spaces) {
-        if (typeof node === 'undefined') {
+        if (!node) {
             return;
         }
         $(domQuery).append(spaces + node.id + '<br>');
