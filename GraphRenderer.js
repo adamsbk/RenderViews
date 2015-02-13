@@ -19,10 +19,6 @@
         document.addEventListener('click', this.onDocumentClick, false);
     });
     
-    self.updateCalls.push(function () {
-        window.console&&console.log('updated');
-    });
-    
     self.onDocumentClick = function onDocumentClick( event ) {
         window.console&&console.log('click bubbled');
         var root = SeedWidgets.Instances()[0].GetShape(0);
@@ -31,6 +27,9 @@
     
     self.WriteDirectoryTree = function (node, spaces) {
         $(domQuery).text(spaces + node.id);
+        if (node.relations.IsLeaf()) {
+            return;
+        }
         var children = node.relations.children;
         for (var i = 0; i < children.length; i++) {
             self.WriteDirectoryTree(SeedWidgets.Instances()[0].GetShape(children[i]), spaces + '__');
