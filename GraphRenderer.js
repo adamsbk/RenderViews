@@ -17,6 +17,7 @@
     });
     
     self.updateCalls.push(function () {
+        window.console&&console.log('updated');
         var root = SeedWidgets.Instances()[0].GetShape(0);
         self.WriteDirectoryTree(root, '');
     });
