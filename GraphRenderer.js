@@ -14,10 +14,11 @@
     self.initCalls.push(function () {
         window.console&&console.log('Just loaded');
         $(domQuery).text("Just loaded the graph renderer.");
-                        
+    });
+    
+    self.updateCalls.push(function () {
         var root = SeedWidgets.Instances()[0].GetShape(0);
         self.WriteDirectoryTree(root, '');
-        
     });
     
     self.WriteDirectoryTree = function (node, spaces) {
