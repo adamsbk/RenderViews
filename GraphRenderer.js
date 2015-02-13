@@ -26,7 +26,7 @@
     }
     
     self.WriteDirectoryTree = function (node, spaces) {
-        $(domQuery).text(spaces + node.id);
+        $(domQuery).append(spaces + node.id + '<br>');
         if (node.relations.IsLeaf()) {
             return;
         }
