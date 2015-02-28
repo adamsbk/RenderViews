@@ -1,4 +1,4 @@
-﻿function GraphRenderer(domQuery) { //for a whole window call with domQuery "<body>"
+function GraphRenderer(domQuery) { //for a whole window call with domQuery "<body>"
     //inherit the base class
     var self = AbstractRenderer(domQuery);
     self.initialized = false;
@@ -23,7 +23,35 @@
         window.console&&console.log('click bubbled');
         $(domQuery).html('');
         var root = SeedWidgets.Instances()[0].GetShape(0);
-        self.WriteDirectoryTree(root, '');
+        //self.WriteDirectoryTree(root, '');
+        
+        console.log(self.buildJson);
+    }
+    
+    self.buildJson = function () {
+        var seed = SeedWidgets.Instances()[0];
+        var root = SeedWidgets.Instances()[0].GetShape(0);
+        
+        var rootJSON = {
+            "name": "root",
+        };
+        
+        buildJsonRec(root, rootJSON);
+        
+        function buildJsonRec (node, jsonNode) {
+            var childNodes = seed.GetChildrenShapes(node);
+            if (childNodes) {
+                jsonNode['children'] = [];
+                jsonNode = jsonNode['children'];
+                for (var i=0; i<childNodes.length; i++) {
+                    var newNode = {"name": "child " + i};
+                    jsonNode.push(newNode);
+                    buildJsonRec(childNodes[i], newNode);
+                }
+            }
+        }
+        
+        return rootJSON;
     }
     
     self.WriteDirectoryTree = function (node, spaces) {
