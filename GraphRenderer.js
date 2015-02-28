@@ -59,7 +59,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.collapsibleTree = function () {
         
-        if ($.contains(domQuery, 'svg')) {
+        if ($(domQuery).children('svg').length) {
             return;
         }
         
