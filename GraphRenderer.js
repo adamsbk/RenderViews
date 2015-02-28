@@ -59,16 +59,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.collapsibleTree = function () {
         
-        $('.node').css({
-                       "cursor": "pointer",
-                       "stroke": "#3182bd",
-                       "stroke-width": "1.5px"
-                       });
-        $('.link').css({
-                       "fill": "none",
-                       "stroke": "#9ecae1",
-                       "stroke-width": "1.5px"
-                       });
+        var style = $("<style>\n\
+                      .node { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
+                      .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
+                      </style>");
+        $('html > head').append(style);
         
         $(domQuery).width(500);
         $(domQuery).height(500);
