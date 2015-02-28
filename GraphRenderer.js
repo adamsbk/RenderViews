@@ -58,6 +58,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     }
     
     self.collapsibleTree = function () {
+        $(domQuery).height(500);
         var width = $(domQuery).width(),
             height = $(domQuery).height(),
             root;
