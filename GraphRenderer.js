@@ -67,7 +67,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         .size([width, height])
         .on("tick", tick);
         
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select(domQuery).append("svg")
         .attr("width", width)
         .attr("height", height);
         
