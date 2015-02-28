@@ -25,7 +25,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var root = SeedWidgets.Instances()[0].GetShape(0);
         //self.WriteDirectoryTree(root, '');
         
-        console.log(self.buildJson);
+        console.log(self.buildJson());
     }
     
     self.buildJson = function () {
