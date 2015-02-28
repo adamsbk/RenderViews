@@ -21,7 +21,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.onDocumentClick = function onDocumentClick( event ) {
         window.console&&console.log('click bubbled');
-        $(domQuery).html('');
+        //$(domQuery).html('');
         //var root = SeedWidgets.Instances()[0].GetShape(0);
         //self.WriteDirectoryTree(root, '');
         
