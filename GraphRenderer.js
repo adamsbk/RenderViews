@@ -46,7 +46,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 for (var i=0; i<childNodes.length; i++) {
                     var newNode = {"name": "child " + i};
                     jsonNode.push(newNode);
-                    buildJsonRec(childNodes[i], newNode);
+                    if (childNodes[i]) { //in case of childNodes is Array [ Object, null ]
+                        buildJsonRec(childNodes[i], newNode);
+                    }
                 }
             }
         }
