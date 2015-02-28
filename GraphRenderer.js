@@ -37,8 +37,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             "name": "root",
         };
         
-        buildJsonRec(root, rootJSON);
-        
         function buildJsonRec (node, jsonNode) {
             var childNodes = seed.GetChildrenShapes(node);
             if (childNodes) {
@@ -54,10 +52,16 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             }
         }
         
+        buildJsonRec(root, rootJSON);
+        
         return rootJSON;
     }
     
     self.collapsibleTree = function () {
+        
+        if ($.contains(domQuery, 'svg')) {
+            return;
+        }
         
         var style = $("<style>\n\
                       .node { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
