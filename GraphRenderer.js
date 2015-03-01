@@ -181,13 +181,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         "mouseenter": function() {
             var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
             if (shape) {
-                   shape.interaction.picked(true);
+                shape.interaction.visible(false);
             }
         },
         "mouseleave": function() {
             var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
             if (shape) {
-                shape.interaction.picked(false);
+                shape.interaction.visible(true);
             }
         }
     }, domQuery + " svg .node.leaf");
