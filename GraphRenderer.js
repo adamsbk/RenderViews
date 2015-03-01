@@ -177,7 +177,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     }
     
     //picking
-    $(document).on(function() {
+    $(document).on({
         "mouseenter": function() {
             var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
             if (shape) {
