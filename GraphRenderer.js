@@ -181,16 +181,16 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         "mouseenter": function() {
             var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
             if (shape) {
-                shape.interaction.visible(false);
+                shape.interaction.visible(!shape.interaction.visible());
             }
         },
         "mouseleave": function() {
             var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
             if (shape) {
-                shape.interaction.visible(true);
+                shape.interaction.visible(!shape.interaction.visible());
             }
         }
-    }, domQuery + " svg .node.leaf");
+    }, domQuery + " svg .node");
     
     self.WriteDirectoryTree = function (node, spaces) {
         if (!node) {
