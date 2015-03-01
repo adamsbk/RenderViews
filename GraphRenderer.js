@@ -122,11 +122,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             // Enter any new nodes.
             node.enter().append("circle")
-            .attr("class", "node")
+            .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
             .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; })
-            .attr("shapeId", function(d) {return d.shapeId})
+            .attr("data-shape-id", function(d) {return d.shapeId})
             .style("fill", color)
             .on("click", click)
             .call(force.drag);
@@ -175,6 +175,22 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             return nodes;
         }
     }
+    
+    //picking
+    $(document).on(function() {
+        "mouseenter": function() {
+            var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
+            if (shape) {
+                   shape.interaction.picked(true);
+            }
+        }
+        "mouseleave": function() {
+            var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
+            if (shape) {
+                shape.interaction.picked(false);
+            }
+        }
+    }, domQuery + " svg .node.leaf");
     
     self.WriteDirectoryTree = function (node, spaces) {
         if (!node) {
