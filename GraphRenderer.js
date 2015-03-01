@@ -46,7 +46,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 if (childNodes[i]) { //in case of childNodes is Array [ Object, null ]
                     var newNode = {"name": "child " + i, "shapeId": childNodes[i].id};
                     jsonNode.push(newNode);
-                    if (!childNodes[i].relations.IsLeaf) {
+                    if (!childNodes[i].relations.IsLeaf()) {
                         buildJsonRec(childNodes[i], newNode);
                     }
                 }
