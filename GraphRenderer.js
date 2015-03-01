@@ -30,28 +30,30 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     }
     
     self.buildJson = function () {
-        var seed = SeedWidgets.Instances()[0];
-        var root = SeedWidgets.Instances()[0].GetShape(0);
         
-        var rootJSON = {
-            "name": "root",
-            "shapeId": root.id
-        };
+        var seed = SeedWidgets.Instances()[0];
         
         function buildJsonRec (node, jsonNode) {
+            if (node.IsLeaf()) {
+                return;
+            }
             var childNodes = seed.GetChildrenShapes(node);
             jsonNode['children'] = [];
             jsonNode = jsonNode['children'];
             for (var i=0; i<childNodes.length; i++) {
-                if (childNodes[i]) { //in case of childNodes is Array [ Object, null ]
+                if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
                     var newNode = {"name": "child " + i, "shapeId": childNodes[i].id};
                     jsonNode.push(newNode);
-                    if (!childNodes[i].relations.IsLeaf()) {
-                        buildJsonRec(childNodes[i], newNode);
-                    }
+                    buildJsonRec(childNodes[i], newNode);
                 }
             }
         }
+        
+        var root = SeedWidgets.Instances()[0].GetShape(0);
+        var rootJSON = {
+            "name": "root",
+            "shapeId": root.id
+        };
         
         buildJsonRec(root, rootJSON);
         
