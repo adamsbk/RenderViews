@@ -34,7 +34,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var seed = SeedWidgets.Instances()[0];
         
         function buildJsonRec (node, jsonNode) {
-            if (node.IsLeaf()) {
+            if (node.relations.IsLeaf()) {
                 return;
             }
             var childNodes = seed.GetChildrenShapes(node);
