@@ -35,6 +35,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         var rootJSON = {
             "name": "root",
+            "shapeId": root.id
         };
         
         function buildJsonRec (node, jsonNode) {
@@ -43,9 +44,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 jsonNode['children'] = [];
                 jsonNode = jsonNode['children'];
                 for (var i=0; i<childNodes.length; i++) {
-                    var newNode = {"name": "child " + i};
-                    jsonNode.push(newNode);
                     if (childNodes[i]) { //in case of childNodes is Array [ Object, null ]
+                        var newNode = {"name": "child " + i, "shapeId": childNodes[i].id};
+                        jsonNode.push(newNode);
                         buildJsonRec(childNodes[i], newNode);
                     }
                 }
@@ -125,6 +126,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
             .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; })
+            .attr("shapeId", function(d) {return d.shapeId})
             .style("fill", color)
             .on("click", click)
             .call(force.drag);
