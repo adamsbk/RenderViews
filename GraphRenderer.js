@@ -183,7 +183,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             if (shape) {
                    shape.interaction.picked(true);
             }
-        }
+        },
         "mouseleave": function() {
             var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
             if (shape) {
