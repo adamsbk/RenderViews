@@ -45,7 +45,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                     var newNode = {
                         "name": "child " + i,
                         "shapeId": childNodes[i].id,
-                        "data-level": level
+                        "level": level
                     };
                     jsonNode.push(newNode);
                     buildJsonRec(childNodes[i], newNode, level+1);
@@ -57,7 +57,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var rootJSON = {
             "name": "root",
             "shapeId": root.id,
-            "data-level": 0
+            "level": 0
         };
         
         buildJsonRec(root, rootJSON, 1);
@@ -102,7 +102,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             links = d3.layout.tree().links(nodes);
             
             //hide 3rd level
-            $('[data-level=3]').click();
+            hideAtLevel(nodes);
             
             // Restart the force layout.
             force
@@ -137,6 +137,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("cy", function(d) { return d.y; })
             .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; })
             .attr("data-shape-id", function(d) {return d.shapeId})
+            .attr("data-level", function(d) {return d.level})
             .style("fill", color)
             .on("click", click)
             .call(force.drag);
@@ -183,6 +184,14 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             recurse(root);
             return nodes;
+        }
+        
+        function hideAtLevel(nodes, level) {
+            for (var i=0; i<nodes.length; i++) {
+                if (nodes.level == 3) {
+                    click(nodes[i]);
+                }
+            }
         }
     }
     
