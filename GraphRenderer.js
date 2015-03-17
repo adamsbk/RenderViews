@@ -39,12 +39,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             }
             var childNodes = seed.GetChildrenShapes(node);
             
-            //children with _children are stacked/collapsed
-            if (level < 3) {
-                jsonNode = jsonNode['children'] = [];
-            } else {
-                jsonNode = jsonNode['_children'] = [];
-            }
+            //create new property children and assign it to current jsonNode
+            jsonNode = jsonNode['children'] = [];
             for (var i=0; i<childNodes.length; i++) {
                 if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
                     var newNode = {
@@ -105,6 +101,14 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         function update() {
             var nodes = flatten(root),
             links = d3.layout.tree().links(nodes);
+            
+            //hide nodes with level 4. Children with _children are stacked/collapsed
+            nodes.forEach(function(d) {
+                          if (d.level > 4) {
+                            d._children = d.children;
+                            d.children = null;
+                          }
+                          });
             
             // Restart the force layout.
             force
