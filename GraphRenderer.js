@@ -33,7 +33,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         var seed = SeedWidgets.Instances()[0];
         
-        function buildJsonRec (node, jsonNode) {
+        function buildJsonRec (node, jsonNode, level) {
             if (node.relations.IsLeaf()) {
                 return;
             }
@@ -42,9 +42,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             jsonNode = jsonNode['children'];
             for (var i=0; i<childNodes.length; i++) {
                 if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
-                    var newNode = {"name": "child " + i, "shapeId": childNodes[i].id};
+                    var newNode = {
+                        "name": "child " + i,
+                        "shapeId": childNodes[i].id,
+                        "data-level": level
+                    };
                     jsonNode.push(newNode);
-                    buildJsonRec(childNodes[i], newNode);
+                    buildJsonRec(childNodes[i], newNode, level+1);
                 }
             }
         }
@@ -52,10 +56,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var root = SeedWidgets.Instances()[0].GetShape(0);
         var rootJSON = {
             "name": "root",
-            "shapeId": root.id
+            "shapeId": root.id,
+            "data-level": 0
         };
         
-        buildJsonRec(root, rootJSON);
+        buildJsonRec(root, rootJSON, 1);
         
         return rootJSON;
     }
@@ -95,6 +100,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         function update() {
             var nodes = flatten(root),
             links = d3.layout.tree().links(nodes);
+            
+            //hide 3rd level
+            $('[data-level=3]').click();
             
             // Restart the force layout.
             force
