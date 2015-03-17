@@ -40,7 +40,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             var childNodes = seed.GetChildrenShapes(node);
             
             //create new property children and assign it to current jsonNode
-            jsonNode = jsonNode['children'] = [];
+            jsonNode['children'] = [];
+            jsonNode = jsonNode['children'];
             for (var i=0; i<childNodes.length; i++) {
                 if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
                     var newNode = {
