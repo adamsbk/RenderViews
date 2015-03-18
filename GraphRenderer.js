@@ -104,12 +104,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             links = d3.layout.tree().links(nodes);
             
             //hide nodes with level 4. Children with _children are stacked/collapsed
-            /*nodes.forEach(function(d) {
+            nodes.forEach(function(d) {
                           if (d.level == 4) {
-                            d._children = d.children;
-                            d.children = null;
+                            toggleAll(d);
                           }
-                          });*/
+                          });
             
             // Restart the force layout.
             force
@@ -165,16 +164,29 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
         }
         
+        // Toggle children.
+        function toggle(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+        }
+        
+        //toggle all descendants of d
+        function toggleAll(d) {
+            if (d.children) {
+                d.children.forEach(toggleAll);
+                toggle(d);
+            }
+        }
+        
         // Toggle children on click.
         function click(d) {
             if (!d3.event.defaultPrevented) {
-                if (d.children) {
-                    d._children = d.children;
-                    d.children = null;
-                } else {
-                    d.children = d._children;
-                    d._children = null;
-                }
+                toggle(d);
                 update();
             }
         }
