@@ -104,12 +104,12 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             links = d3.layout.tree().links(nodes);
             
             //hide nodes with level 4. Children with _children are stacked/collapsed
-            nodes.forEach(function(d) {
+            /*nodes.forEach(function(d) {
                           if (d.level == 4) {
                             d._children = d.children;
                             d.children = null;
                           }
-                          });
+                          });*/
             
             // Restart the force layout.
             force
