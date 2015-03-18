@@ -193,7 +193,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 if (!node.id) node.id = ++i;
                 
                 if (node.level == 4) {
-                    toggleAll(node);
+                    toggle(node);
                 }
                 
                 nodes.push(node);
