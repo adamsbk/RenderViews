@@ -100,15 +100,16 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         update();
         
         function update() {
-            var nodes = flatten(root),
-            links = d3.layout.tree().links(nodes);
+            var nodes = flatten(root);
             
             //hide nodes with level 4. Children with _children are stacked/collapsed
             nodes.forEach(function(d) {
                           if (d.level == 4) {
-                            toggleAll(d);
+                          toggleAll(d);
                           }
                           });
+            
+            var links = d3.layout.tree().links(nodes);
             
             // Restart the force layout.
             force
