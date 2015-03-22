@@ -55,6 +55,19 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             }
         }
         
+        function addDescendantCountProperty(node) {
+            if (!('children' in node)) {
+                node['descendatnCount'] = 0;
+                return 1;
+            }
+            var count = 0;
+            for (var i=0; i<node.children.length; i++) {
+                count += addDescendantCountProperty(node.children[i]);
+            }
+            node['descendatnCount'] = count;
+            return node.children.length + count;
+        }
+        
         var root = SeedWidgets.Instances()[0].GetShape(0);
         var rootJSON = {
             "name": "root",
@@ -63,6 +76,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         };
         
         buildJsonRec(root, rootJSON, 1);
+        addDescendantCountProperty(rootJSON);
         
         return rootJSON;
     }
@@ -134,7 +148,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; })
+            .attr("r", function(d) { return d.descendatnCount + 4 || 4.5; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             .style("fill", color)
@@ -192,9 +206,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 if (node.children) node.children.forEach(recurse);
                 if (!node.id) node.id = ++i;
                 
-                if (node.level == 4) {
-                    toggle(node);
-                }
+                //if (node.level == 4) {
+                //    toggle(node);
+                //}
                 
                 nodes.push(node);
             }
