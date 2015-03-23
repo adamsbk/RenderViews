@@ -149,6 +149,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             // Exit any old nodes.
             node.exit().remove();
             
+            node.transition()
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? d.descendatnCount * 4.5 : 6; });
+            
             // Enter any new nodes.
             node.enter().append("circle")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
