@@ -62,12 +62,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 return 1;
             }
             var count = 0;
-            var node['leafCount'] = 0;
+            var leafCount = 0;
             for (var i=0; i<node.children.length; i++) {
                 count += addDescendantCountProperty(node.children[i]);
-                node['leafCount'] += node.children[i].leafCount;
+                leafCount += node.children[i].leafCount;
             }
             node['descendatnCount'] = count;
+            node['leafCount'] = leafCount;
             return node.children.length + count;
         }
         
