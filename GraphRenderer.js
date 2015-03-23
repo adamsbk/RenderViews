@@ -59,7 +59,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             if (!('children' in node)) {
                 node['descendatnCount'] = 0;
                 node['leafCount'] = 1;
-                return 0;
+                return 1;
             }
             var count = 0;
             var node['leafCount'] = 0;
