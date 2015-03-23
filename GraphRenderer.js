@@ -58,11 +58,14 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         function addDescendantCountProperty(node) {
             if (!('children' in node)) {
                 node['descendatnCount'] = 0;
-                return 1;
+                node['leafCount'] = 1;
+                return 0;
             }
             var count = 0;
+            var node['leafCount'] = 0;
             for (var i=0; i<node.children.length; i++) {
                 count += addDescendantCountProperty(node.children[i]);
+                node['leafCount'] += node.children[i].leafCount;
             }
             node['descendatnCount'] = count;
             return node.children.length + count;
@@ -148,7 +151,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return d.descendatnCount + 4 || 4.5; })
+            .attr("r", function(d) { return d.leafCount + 4 || 4.5; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             .style("fill", color)
