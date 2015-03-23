@@ -106,7 +106,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var force = d3.layout.force()
         .size([width, height])
         .charge(function(d) { return d._children ? -d.descendatnCount * 30 : -30; })
-        .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.leafCount) * 25; })
+        .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.target.leafCount) * 25; })
         .on("tick", tick);
         
         var svg = d3.select(domQuery).append("svg")
