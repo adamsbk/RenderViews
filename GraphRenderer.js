@@ -154,7 +154,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return d.leafCount + 4 || 4.5; })
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? d.descendatnCount * 4.5 : 6; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             .style("fill", color)
