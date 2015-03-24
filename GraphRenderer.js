@@ -152,8 +152,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             node.transition()
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
+            var nodeEnter = node.enter().append("g")
+            .attr("class", "gnode");
+            
             // Enter any new nodes.
-            node.enter().append("circle")
+            nodeEnter.append("circle")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
@@ -163,6 +166,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .style("fill", color)
             .on("click", click)
             .call(force.drag);
+            
+            nodeEnter.append("text")
+            .attr("dy", ".35em")
+            .text(function(d) { return "Desc count: " + d.descendatnCount });
         }
         
         function tick() {
