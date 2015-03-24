@@ -152,22 +152,22 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             node.transition()
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
-            var nodeEnter = node.enter().append("g")
+            var nodeEnter = node.enter().append("svg:g")
             .attr("class", "gnode")
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; })
+            //.attr("cx", function(d) { return d.x; })
+            //.attr("cy", function(d) { return d.y; })
             .on("click", click)
             .call(force.drag);
             
             // Enter any new nodes.
-            nodeEnter.append("circle")
+            nodeEnter.append("svg:circle")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             .style("fill", color);
             
-            nodeEnter.append("text")
+            nodeEnter.append("svg:text")
             .attr("dy", ".35em")
             .text(function(d) { return "Desc count: " + d.descendatnCount });
         }
