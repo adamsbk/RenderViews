@@ -152,7 +152,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             node.transition()
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
-            var nodeEnter = node.enter().append("svg:g")
+            var nodeEnter = node.enter().append("g")
             .attr("class", "gnode")
             //.attr("cx", function(d) { return d.x; })
             //.attr("cy", function(d) { return d.y; })
@@ -160,14 +160,14 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .call(force.drag);
             
             // Enter any new nodes.
-            nodeEnter.append("svg:circle")
+            nodeEnter.append("circle")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             .style("fill", color);
             
-            nodeEnter.append("svg:text")
+            nodeEnter.append("text")
             .attr("dy", ".35em")
             .text(function(d) { return "Desc count: " + d.descendatnCount });
         }
@@ -178,8 +178,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
             
-            node.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
+            //node.attr("cx", function(d) { return d.x; })
+            //.attr("cy", function(d) { return d.y; });
+            node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
         }
         
         // Color leaf nodes orange, and packages white or blue.
