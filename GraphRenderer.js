@@ -150,14 +150,14 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             node.exit().remove();
             
             node.transition()
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? d.descendatnCount * 4.5 : 6; });
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
             // Enter any new nodes.
             node.enter().append("circle")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? d.descendatnCount * 4.5 : 6; })
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             .style("fill", color)
