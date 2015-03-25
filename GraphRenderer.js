@@ -94,6 +94,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var style = $("<style>\n\
                       .node { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
+                      g text { display: none; }\n\
+                      g:hover text { display: block; }\n\
                       </style>");
         $('html > head').append(style);
         
