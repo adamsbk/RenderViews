@@ -121,9 +121,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         root = self.buildJson();
         
         (function(nodes) {
-         function recurse(node) {
-            var toggled = false;
-            if (node.children) node.children.forEach(recurse);
+         function recurse(node, toggled) {
+            if (node.children) {
+                for (var i=0; i<node.children.length; i++) recurse(node);
+            }
             if (!node.id) node.id = ++i;
             if (node.level >= 3) {
                 if (toggled) {
@@ -137,7 +138,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             }
          }
          
-         recurse(nodes);
+         recurse(nodes, false);
          })(root);
         
         update();
