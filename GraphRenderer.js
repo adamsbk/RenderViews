@@ -146,7 +146,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("y2", function(d) { return d.target.y; });
             
             // Update the nodes…
-            node = node.data(nodes, function(d) { return d.id; }).style("fill", color);
+            node = node.data(nodes, function(d) { return d.id; });
             
             // Exit any old nodes.
             node.exit().remove();
@@ -213,10 +213,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         // Toggle children on click.
         function click(d) {
-            if (!d3.event.defaultPrevented) {
-                toggle(d);
-                update();
-            }
+            toggle(d);
+            update();
         }
         
         // Returns a list of all nodes under the root.
