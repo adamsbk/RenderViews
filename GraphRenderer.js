@@ -151,7 +151,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             // Exit any old nodes.
             node.exit().remove();
             
-            node.selectAll("circle").transition()
+            node.select("circle").transition()
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
             var nodeEnter = node.enter().append("g")
@@ -167,11 +167,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
-            .style("fill", color);
             
             nodeEnter.append("text")
             .attr("dy", ".35em")
             .text(function(d) { return "Desc count: " + d.descendatnCount; });
+            
+            node.select("circle")
+            .style("fill", color);
         }
         
         function tick() {
