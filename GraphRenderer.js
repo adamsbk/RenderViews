@@ -127,12 +127,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             if (!node.id) node.id = ++i;
             if (node.level >= 3) {
                 if (toggled) {
-                    if (node.children) {
-                }
+                    if (node.children.length > 1) {
+                        toggle(node);
+                    }
                 } else {
                     toggled = true;
+                    toggle(node);
                 }
-                toggle(node);
             }
          }
          
