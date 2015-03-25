@@ -167,10 +167,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("dx", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             
             texts.append("tspan")
-            .attr("text", function(d) { return "Desc count: " + d.descendatnCount; });
+            .text(function(d) { return "Desc count: " + d.descendatnCount; });
             
             texts.append("tspan")
-            .attr("text", function(d) { return "Leaf count: " + d.leafCount; })
+            .text(function(d) { return "Leaf count: " + d.leafCount; })
             .attr("y", "1em");
             
             node.select("circle")
