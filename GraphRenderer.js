@@ -160,18 +160,20 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             // Enter any new nodes.
             nodeEnter.append("circle")
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
             var texts = nodeEnter.append("text")
             .attr("dy", ".35em")
-            .attr("dx", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
+            .attr("dx", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
             texts.append("tspan")
+            .attr("x", 0)
             .text(function(d) { return "Desc count: " + d.descendatnCount; });
             
             texts.append("tspan")
-            .text(function(d) { return "Leaf count: " + d.leafCount; })
-            .attr("y", "1em");
+            .attr("x", 0)
+            .attr("y", "1em")
+            .text(function(d) { return "Leaf count: " + d.leafCount; });
             
             node.select("circle")
             .transition()
