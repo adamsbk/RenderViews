@@ -59,17 +59,17 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             if (!('children' in node)) {
                 node['descendatnCount'] = 0;
                 node['leafCount'] = 1;
-                return 1;
+                return;
             }
             var count = 0;
             var leafCount = 0;
             for (var i=0; i<node.children.length; i++) {
-                count += addDescendantCountProperty(node.children[i]);
+                addDescendantCountProperty(node.children[i]);
+                count += node.children[i].descendatnCount + 1;
                 leafCount += node.children[i].leafCount;
             }
             node['descendatnCount'] = count;
             node['leafCount'] = leafCount;
-            return node.children.length + count;
         }
         
         var root = SeedWidgets.Instances()[0].GetShape(0);
@@ -171,7 +171,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             nodeEnter.append("text")
             .attr("dy", ".35em")
-            .text(function(d) { return "Leaf count: " + d.leafCount });
+            .text(function(d) { return "Desc count: " + d.descendatnCount; });
         }
         
         function tick() {
