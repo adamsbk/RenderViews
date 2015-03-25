@@ -123,7 +123,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         (function(nodes) {
          function recurse(node, toggled) {
             if (node.children) {
-                for (var i=0; i<node.children.length; i++) recurse(node);
+                for (var i=0; i<node.children.length; i++) recurse(node, toggled);
             }
             if (!node.id) node.id = ++i;
             if (node.level >= 3) {
