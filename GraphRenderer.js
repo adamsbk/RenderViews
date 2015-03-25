@@ -93,7 +93,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         var style = $("<style>\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
-                      .node text { display: none; stroke: #444; stroke-width: 1px; }\n\
+                      .node text { display: none; }\n\
                       .node:hover text { display: block; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
@@ -162,9 +162,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             nodeEnter.append("circle")
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
+            //dx and x not worked when tspan x is set
             var texts = nodeEnter.append("text")
             .attr("dy", ".35em")
-            .attr("dx", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
+            .attr("transform", function(d) { return "translate(" + d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6 + ")"; });
             
             texts.append("tspan")
             .attr("x", 0)
