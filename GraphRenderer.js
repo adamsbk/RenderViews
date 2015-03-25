@@ -151,25 +151,26 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             // Exit any old nodes.
             node.exit().remove();
             
-            //node.select("circle").transition()
-            //.attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
+            node.select("circle").transition()
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
             var nodeEnter = node.enter().append("g")
             .attr("class", "gnode")
-            //.attr("cx", function(d) { return d.x; })
-            //.attr("cy", function(d) { return d.y; })
             .on("click", click)
             .call(force.drag);
             
             // Enter any new nodes.
             nodeEnter.append("circle")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             .attr("data-shape-id", function(d) {return d.shapeId})
             .attr("data-level", function(d) {return d.level})
             
             nodeEnter.append("text")
             .attr("dy", ".35em")
+            .attr("dx", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
             .text(function(d) { return "Desc count: " + d.descendatnCount; });
             
             node.select("circle")
