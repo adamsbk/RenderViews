@@ -119,6 +119,20 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         node = svg.selectAll(".node");
         
         root = self.buildJson();
+        
+        (function(nodes) {
+         function recurse(node) {
+         if (node.children) node.children.forEach(recurse);
+         if (!node.id) node.id = ++i;
+         if (node.level == 4) {
+         toggle(node);
+         return;
+         }
+         }
+         
+         recurse(nodes);
+         })(root);
+        
         update();
         
         function update() {
