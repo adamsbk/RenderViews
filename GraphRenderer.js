@@ -128,6 +128,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
          if (node.level >= 3) {
             if (node.children && node.children.length > 1) {
                 toggle(node);
+                return;
             }
          }
          }
