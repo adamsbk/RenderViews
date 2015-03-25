@@ -121,24 +121,18 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         root = self.buildJson();
         
         (function(nodes) {
-         function recurse(node, toggled) {
-            if (node.children) {
-                for (var i=0; i<node.children.length; i++) recurse(node.children[i], toggled);
-            }
-            if (!node.id) node.id = ++i;
-            if (node.level >= 3) {
-                if (toggled) {
-                    if (node.children.length > 1) {
-                        toggle(node);
-                    }
-                } else {
-                    toggled = true;
-                    toggle(node);
-                }
+         function recurse(node) {
+         
+         node.children.forEach(recurse);
+         
+         if (node.level >= 3) {
+            if (node.children.length > 1) {
+                toggle(node);
             }
          }
+         }
          
-         recurse(nodes, false);
+         recurse(nodes);
          })(root);
         
         update();
