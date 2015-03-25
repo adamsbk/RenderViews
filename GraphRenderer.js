@@ -165,7 +165,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             //dx and x not worked when tspan x is set
             var texts = nodeEnter.append("text")
             .attr("dy", ".35em")
-            .attr("transform", function(d) { return "translate(" + (d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6) + ", 0)"; });
+            .attr("transform", function(d) {
+                  var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
+                  return "translate(" + radius + ", 0)";
+                  });
             
             texts.append("tspan")
             .attr("x", 0)
