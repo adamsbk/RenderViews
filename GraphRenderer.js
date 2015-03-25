@@ -213,7 +213,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         // Toggle children on click.
         function click(d) {
+            alert("click 1")
             if (d3.event.defaultPrevented === false) {
+                alert("click 2");
                 toggle(d);
                 update();
             }
