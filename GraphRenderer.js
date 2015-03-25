@@ -213,8 +213,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         // Toggle children on click.
         function click(d) {
-            toggle(d);
-            update();
+            if (d3.event.defaultPrevented === false) {
+                toggle(d);
+                update();
+            }
         }
         
         // Returns a list of all nodes under the root.
