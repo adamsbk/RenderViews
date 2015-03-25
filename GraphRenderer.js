@@ -171,7 +171,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             nodeEnter.append("text")
             .attr("dy", ".35em")
-            .text(function(d) { return "Desc count: " + d.descendatnCount });
+            .text(function(d) { return "Leaf count: " + d.leafCount });
         }
         
         function tick() {
