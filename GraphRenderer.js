@@ -151,8 +151,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             // Exit any old nodes.
             node.exit().remove();
             
-            node.select("circle").transition()
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
+            //node.select("circle").transition()
+            //.attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
             var nodeEnter = node.enter().append("g")
             .attr("class", "gnode")
