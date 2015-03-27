@@ -123,13 +123,14 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         (function(nodes) {
          function recurse(node) {
          
+         if (node.children) node.children.forEach(recurse);
+         
          if (node.level >= 3) {
             if (node.children && node.children.length > 1) {
+                console.log("toggled level " + node.level);
                 toggle(node);
-                return;
             }
          }
-         if (node.children) node.children.forEach(recurse);
          }
          
          recurse(nodes);
