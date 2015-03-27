@@ -196,6 +196,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("y", "1em")
             .text(function(d) { return "Leaf count: " + d.leafCount; });
             
+            texts.append("tspan")
+            .attr("x", 0)
+            .attr("y", "2em")
+            .text(function(d) { return "Level: " + d.level; });
+            
             node.select("circle")
             .transition()
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
@@ -254,10 +259,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             function recurse(node) {
                 if (node.children) node.children.forEach(recurse);
                 if (!node.id) node.id = ++i;
-                
-                //if (node.level == 4) {
-                //    toggle(node);
-                //}
                 
                 nodes.push(node);
             }
