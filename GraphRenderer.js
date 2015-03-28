@@ -198,8 +198,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("height", "4em");
             
             var bodyElem = foreignObject.append("body")
-            .attr("xmlns", "http://www.w3.org/1999/xhtml");
-            .text(function(d) { return "<p>Desc count: "+d.descendatnCount+"</p><p>Leaf count: "+d.leafCount+"</p><p>Level: "+d.level+"</p>" });
+            .attr("xmlns", "http://www.w3.org/1999/xhtml")
+            .text(function(d) { return "<p>Desc count: "+d.descendatnCount+"</p><p>Leaf count: "+d.leafCount+"</p><p>Level: "+d.level+"</p>"; });
             
             var texts = switchElem.append("text");
             
