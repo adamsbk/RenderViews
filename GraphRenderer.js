@@ -108,7 +108,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var force = d3.layout.force()
         .size([width, height])
         .gravity(.01)
-        .charge(function(d) { return d._children ? -d.leafCount * 30 : -30; })
+        .charge(function(d) { return d._children ? -d.leafCount * 60 : -120; })
         .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.target.leafCount) * 25; })
         .on("tick", tick);
         
