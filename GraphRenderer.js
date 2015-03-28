@@ -121,6 +121,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         root = self.buildJson();
         
+        //set root fixed
+        root.fixed = true;
+        root.x = width / 2;
+        root.y = height / 2;
+        
         (function(nodes) {
          function recurse(node) {
          
