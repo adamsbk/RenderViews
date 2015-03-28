@@ -94,7 +94,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var style = $("<style>\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node text, .node foreignObject { display: none; }\n\
-                      .node:hover text, .node foreignObject { display: block; }\n\
+                      .node:hover text, .node:hover foreignObject { display: block; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
         $('html > head').append(style);
@@ -199,9 +199,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             var bodyElem = foreignObject.append("body")
             .attr("xmlns", "http://www.w3.org/1999/xhtml");
-            bodyElem.text(function(d) { return "<p>Desc count: "+d.descendatnCount+"</p>"; });
-            bodyElem.text(function(d) { return "<p>Leaf count: "+d.leafCount+"</p>"; });
-            bodyElem.text(function(d) { return "<p>Level: "+d.level+"</p>"; });
+            bodyElem.append("p").text(function(d) { return "Desc count: "+d.descendatnCount; });
+            bodyElem.append("p").text(function(d) { return "Leaf count: "+d.leafCount; });
+            bodyElem.append("p").text(function(d) { return "Level: "+d.level; });
             
             var texts = switchElem.append("text");
             
