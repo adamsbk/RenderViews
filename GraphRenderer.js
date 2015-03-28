@@ -177,13 +177,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             var nodeEnter = node.enter().append("g")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("data-shape-id", function(d) {return d.shapeId})
-            .attr("data-level", function(d) {return d.level})
-            .on("click", click)
-            .call(force.drag);
+            .attr("data-level", function(d) {return d.level});
             
             // Enter any new nodes.
             nodeEnter.append("circle")
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
+            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
+            .on("click", click)
+            .call(force.drag);
             
             //add texts to nodes - try <foreignobject> and then <text> with tspan
             //dx and x not worked when tspan x is set
@@ -198,8 +198,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("height", "4em");
             
             var bodyElem = foreignObject.append("body")
-            .attr("xmlns", "http://www.w3.org/1999/xhtml")
-            .text(function(d) { return "<p>Desc count: "+d.descendatnCount+"</p><p>Leaf count: "+d.leafCount+"</p><p>Level: "+d.level+"</p>"; });
+            .attr("xmlns", "http://www.w3.org/1999/xhtml");
+            bodyElem.text(function(d) { return "<p>Desc count: "+d.descendatnCount+"</p>"; });
+            bodyElem.text(function(d) { return "<p>Leaf count: "+d.leafCount+"</p>"; });
+            bodyElem.text(function(d) { return "<p>Level: "+d.level+"</p>"; });
             
             var texts = switchElem.append("text");
             
