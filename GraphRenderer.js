@@ -108,7 +108,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         var force = d3.layout.force()
         .size([width, height])
         .gravity(.01)
-        .charge(function(d) { return d._children ? -d.leafCount * 60 : -120; })
+        .charge(function(d) { return d._children ? -d.leafCount * 15 : -30; })
         .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.target.leafCount) * 25; })
         .on("tick", tick);
         
@@ -185,16 +185,27 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             nodeEnter.append("circle")
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; });
             
+            //add texts to nodes - try <foreignobject> and then <text> with tspan
             //dx and x not worked when tspan x is set
-            var texts = nodeEnter.append("text")
-            .attr("dy", ".35em")
+            var switchElem = nodeEnter.append("switch")
             .attr("transform", function(d) {
                   var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
                   return "translate(" + radius + ", 0)";
                   });
             
+            var foreignObject = switchElem.append("foreignObject")
+            .attr("width", 400)
+            .attr("height", "4em");
+            
+            var bodyElem = foreignObject.append("body")
+            .attr("xmlns", "http://www.w3.org/1999/xhtml");
+            .text(function(d) { return "<p>Desc count: "+d.descendatnCount+"</p><p>Leaf count: "+d.leafCount+"</p><p>Level: "+d.level+"</p>" });
+            
+            var texts = switchElem.append("text");
+            
             texts.append("tspan")
             .attr("x", 0)
+            .attr("y", 0)
             .text(function(d) { return "Desc count: " + d.descendatnCount; });
             
             texts.append("tspan")
