@@ -2,6 +2,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     //inherit the base class
     var self = AbstractRenderer(domQuery);
     self.initialized = false;
+    
+    self.popupWindow = null;
+    
     self.IsInitialized = function () {
         if (!self.initialized) {
             self.initialized = true;
@@ -17,6 +20,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         //na vypisanie stromu po kliku, pretoze SeedWidgets.Instances()[0] je undefined pri prvom updateCalls
         document.addEventListener('click', this.onDocumentClick, false);
+        document.addEventListener('click', this.onDocumentClick, false);
     });
     
     self.onDocumentClick = function onDocumentClick( event ) {
@@ -27,6 +31,20 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         //console.log(self.buildJson());
         self.collapsibleTree();
+    }
+    
+    self.showInPopup = function () {
+        if (self.popupWindow !== null && !self.popupWindow.closed) {
+            return;
+        }
+        self.popupWindow = window.open("", "", "width="+ $(domQuery).width() +", height="+ $(domQuery).height() +", resizable=yes, menubar=yes, status=yes");
+        if (!self.popupWindow) {
+            alert("It seems that your browser has not allowed popup windows for this domain.");
+            return;
+        }
+        var newDomQuery = self.popupWindow.document.body;
+        $(newDomQuery).html($(domQuery).clone(true));
+        domQuery = newDomQuery;
     }
     
     self.buildJson = function () {
@@ -90,8 +108,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         if ($(domQuery).children('svg').length) {
             return;
         }
+        d3.select(domQuery).append('<button id="showInPopup">View graph in new window</buddon>')
+        .on(click, self.showInPopup);
         
         var style = $("<style>\n\
+                      " + domQuery + " > svg { overflow: visible; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
@@ -198,7 +219,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("height", "5em")
             .style("transform", function(d) {
                   var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
-                  return "translate(" + (radius - 2) + "px, -2em)"; // y = 1.5em + .5em(padding)
+                  return "translate(" + (radius - .3*radius) + "px, -2em)"; //x=right-30% from radius, y = 1.5em + .5em(padding)
                   });
             
             var bodyElem = foreignObject.append("xhtml:body");
