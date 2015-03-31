@@ -95,7 +95,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
-                      .node foreignObject .node-info { backgroudn-color: #eee; padding: 10px; border: thin solid #ccc; }\n\
+                      .node foreignObject .node-info { background-color: #eee; padding: 10px; border: thin solid #ccc; }\n\
+                      .node foreignObject .node-info p { padding: 0; margin: 0; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
         $('html > head').append(style);
@@ -199,10 +200,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                   return "translate(" + (radius + 5) + "px, -1.5em)";
                   });
             
-            var bodyElem = foreignObject.append("body")
-            .attr("xmlns", "http://www.w3.org/1999/xhtml");
+            //var bodyElem = foreignObject.append("body")
+            //.attr("xmlns", "http://www.w3.org/1999/xhtml");
             
-            var containerElem = bodyElem.append("div")
+            var containerElem = foreignObject.append("div")
             .attr("class", "node-info");
             
             containerElem.append("p").text(function(d) { return "Descendant count: "+d.descendatnCount; });
