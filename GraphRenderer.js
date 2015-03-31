@@ -95,8 +95,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
-                      .node foreignObject body { margin: 0; padding: 0; }\n\
-                      .node foreignObject .node-info { background-color: #eee; padding: 10px; border: thin solid #ccc; border-radius: 4px; }\n\
+                      .node foreignObject body { margin: 0; padding: 0; background-color: transparent; }\n\
+                      .node foreignObject .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
                       .node foreignObject .node-info p { padding: 0; margin: 0; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
@@ -180,13 +180,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             var nodeEnter = node.enter().append("g")
             .attr("class", function(d) { return d.children ? "node" : "node leaf" })
             .attr("data-shape-id", function(d) {return d.shapeId})
-            .attr("data-level", function(d) {return d.level});
+            .attr("data-level", function(d) {return d.level})
+            .call(force.drag);
             
             // Enter any new nodes.
             nodeEnter.append("circle")
             .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
-            .on("click", click)
-            .call(force.drag);
+            .on("click", click);
             
             //add texts to nodes - try <foreignobject> and then <text> with tspan
             //dx and x not worked when tspan x is set
@@ -198,7 +198,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("height", "5em")
             .style("transform", function(d) {
                   var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
-                  return "translate(" + (radius + 5) + "px, -2.5em)";
+                  return "translate(" + (radius - 2) + "px, -2em)"; // y = 1.5em + .5em(padding)
                   });
             
             var bodyElem = foreignObject.append("xhtml:body");
@@ -212,7 +212,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             var texts = switchElem.append("text")
             .style("transform", function(d) {
                   var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
-                  return "translate(" + (radius + 5) + "px, -1.5em)";
+                  return "translate(" + (radius) + "px, 0)";
                   });
             
             texts.append("tspan")
