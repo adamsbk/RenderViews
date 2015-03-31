@@ -95,6 +95,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
+                      .node foreignObject .node-info { backgroudn-color: #eee; padding: 10px; border: thin solid #ccc; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
         $('html > head').append(style);
@@ -187,28 +188,37 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             //add texts to nodes - try <foreignobject> and then <text> with tspan
             //dx and x not worked when tspan x is set
-            var switchElem = nodeEnter.append("switch")
-            .attr("transform", function(d) {
-                  var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
-                  return "translate(" + radius + ", 0)";
-                  });
+            var switchElem = nodeEnter.append("switch");
             
             var foreignObject = switchElem.append("foreignObject")
-            .attr("width", 400)
-            .attr("height", "4em");
+            .attr("requiredExtensions", "http://www.w3.org/1999/xhtml")
+            .attr("width", 170)
+            .attr("height", "4em")
+            .attr("transform", function(d) {
+                  var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
+                  return "translate(" + (radius + 5) + "px, -1.5em)";
+                  });
             
             var bodyElem = foreignObject.append("body")
             .attr("xmlns", "http://www.w3.org/1999/xhtml");
-            bodyElem.append("p").text(function(d) { return "Desc count: "+d.descendatnCount; });
-            bodyElem.append("p").text(function(d) { return "Leaf count: "+d.leafCount; });
-            bodyElem.append("p").text(function(d) { return "Level: "+d.level; });
             
-            var texts = switchElem.append("text");
+            var containerElem = bodyElem.append("div")
+            .attr("class", "node-info");
+            
+            containerElem.append("p").text(function(d) { return "Descendant count: "+d.descendatnCount; });
+            containerElem.append("p").text(function(d) { return "Leaf count: "+d.leafCount; });
+            containerElem.append("p").text(function(d) { return "Level: "+d.level; });
+            
+            var texts = switchElem.append("text")
+            .attr("transform", function(d) {
+                  var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
+                  return "translate(" + (radius + 5) + "px, -1.5em)";
+                  });
             
             texts.append("tspan")
             .attr("x", 0)
             .attr("y", 0)
-            .text(function(d) { return "Desc count: " + d.descendatnCount; });
+            .text(function(d) { return "Descendant count: " + d.descendatnCount; });
             
             texts.append("tspan")
             .attr("x", 0)
