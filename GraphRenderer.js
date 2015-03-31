@@ -95,7 +95,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
-                      .node foreignObject .node-info { background-color: #eee; padding: 10px; border: thin solid #ccc; }\n\
+                      .node foreignObject body { margin: 0; padding: 0; }\n\
+                      .node foreignObject .node-info { background-color: #eee; padding: 10px; border: thin solid #ccc; border-radius: 4px; }\n\
                       .node foreignObject .node-info p { padding: 0; margin: 0; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
@@ -194,10 +195,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             var foreignObject = switchElem.append("foreignObject")
             .attr("requiredExtensions", "http://www.w3.org/1999/xhtml")
             .attr("width", 170)
-            .attr("height", "4em")
-            .attr("transform", function(d) {
+            .attr("height", "5em")
+            .style("transform", function(d) {
                   var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
-                  return "translate(" + (radius + 5) + "px, -1.5em)";
+                  return "translate(" + (radius + 5) + "px, -2.5em)";
                   });
             
             var bodyElem = foreignObject.append("xhtml:body");
@@ -209,7 +210,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             containerElem.append("xhtml:p").text(function(d) { return "Level: "+d.level; });
             
             var texts = switchElem.append("text")
-            .attr("transform", function(d) {
+            .style("transform", function(d) {
                   var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
                   return "translate(" + (radius + 5) + "px, -1.5em)";
                   });
