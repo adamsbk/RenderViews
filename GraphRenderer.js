@@ -200,15 +200,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                   return "translate(" + (radius + 5) + "px, -1.5em)";
                   });
             
-            //var bodyElem = foreignObject.append("body")
-            //.attr("xmlns", "http://www.w3.org/1999/xhtml");
-            
-            var containerElem = foreignObject.append("div")
+            var bodyElem = foreignObject.append("xhtml:body");
+            var containerElem = bodyElem.append("xhtml:div")
             .attr("class", "node-info");
             
-            containerElem.append("p").text(function(d) { return "Descendant count: "+d.descendatnCount; });
-            containerElem.append("p").text(function(d) { return "Leaf count: "+d.leafCount; });
-            containerElem.append("p").text(function(d) { return "Level: "+d.level; });
+            containerElem.append("xhtml:p").text(function(d) { return "Descendant count: "+d.descendatnCount; });
+            containerElem.append("xhtml:p").text(function(d) { return "Leaf count: "+d.leafCount; });
+            containerElem.append("xhtml:p").text(function(d) { return "Level: "+d.level; });
             
             var texts = switchElem.append("text")
             .attr("transform", function(d) {
