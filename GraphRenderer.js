@@ -108,8 +108,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         if ($(domQuery).children('svg').length) {
             return;
         }
-        d3.select(domQuery).append('<button id="showInPopup">View graph in new window</buddon>')
-        .on(click, self.showInPopup);
+        d3.select(domQuery).append('button')
+        .attr('id', 'showInPopup')
+        .text('View graph in new window')
+        .on('click', self.showInPopup);
         
         var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; }\n\
