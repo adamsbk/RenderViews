@@ -133,7 +133,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         var force = d3.layout.force()
         .size([width, height])
-        .gravity(.01)
+        .gravity(.05)
         .charge(function(d) { return d._children ? -d.leafCount * 15 : -30; })
         .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.target.leafCount) * 25; })
         .on("tick", tick);
@@ -168,10 +168,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
          recurse(nodes);
          })(root);
         
-        update(root);
+        update();
         
-        function update(srcRoot) {
-            var nodes = flatten(srcRoot),
+        function update() {
+            var nodes = flatten(root),
             links = d3.layout.tree().links(nodes);
             
             // Restart the force layout.
@@ -296,7 +296,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         // Toggle children on click.
         function click(d) {
-            if (d3.event.defaultPrevented === false) {
+            if (d3.event.defaultPrevented === false) { // ignore drag
                 console.log(d);
                 toggle(d);
                 console.log(d);
