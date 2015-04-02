@@ -168,10 +168,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
          recurse(nodes);
          })(root);
         
-        update();
+        update(root);
         
-        function update() {
-            var nodes = flatten(root),
+        function update(srcRoot) {
+            var nodes = flatten(srcRoot),
             links = d3.layout.tree().links(nodes);
             
             // Restart the force layout.
@@ -300,7 +300,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 console.log(d);
                 toggle(d);
                 console.log(d);
-                update();
+                update(d);
             }
         }
         
