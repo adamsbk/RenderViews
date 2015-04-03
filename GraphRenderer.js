@@ -133,7 +133,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         var force = d3.layout.force()
         .size([width, height])
-        .gravity(.05)
+        .gravity(.01)
         .charge(function(d) { return d._children ? -d.leafCount * 15 : -30; })
         .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.target.leafCount) * 25; })
         .on("tick", tick);
@@ -152,6 +152,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         root.x = width / 2;
         root.y = height / 2;
         
+        flatten(root); //it is important to add `id` attribute to nodes before clustering !!!
         (function(nodes) {
          function recurse(node) {
          
@@ -300,7 +301,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 console.log(d);
                 toggle(d);
                 console.log(d);
-                update(d);
+                update();
             }
         }
         
