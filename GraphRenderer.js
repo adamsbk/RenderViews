@@ -20,15 +20,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     self.initCalls.push(function () {
         window.console&&console.log('Just loaded');
         $(domQuery).text("Just loaded the graph renderer.");
+        
+        //add button to draw D3 graph
         $(domQuery).append(
             $('<button id="drawGraph">Draw graph</button>').click(function(){
                 self.collapsibleTree();
             })
         );
-        
-        //na vypisanie stromu po kliku, pretoze SeedWidgets.Instances()[0] je undefined pri prvom updateCalls
-        document.addEventListener('click', this.onDocumentClick, false);
-        document.addEventListener('click', this.onDocumentClick, false);
     });
     
     self.showInPopup = function () {
@@ -103,15 +101,13 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.collapsibleTree = function () {
         
-        console.log(self.treeNodes);
-        
         if ($(domQuery).children('svg').length) {
             return;
         }
-        d3.select(domQuery).append('button')
+        /*d3.select(domQuery).append('button')
         .attr('id', 'showInPopup')
         .text('View graph in new window')
-        .on('click', self.showInPopup);
+        .on('click', self.showInPopup);*/
         
         var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; }\n\
