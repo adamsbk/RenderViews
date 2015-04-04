@@ -140,7 +140,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         .charge(function(d) { return d._children ? -d.leafCount * 15 : -30; })
         .linkDistance(function(d) {
                       var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
-                      var nodesDistance = d.target._children ? 60 : d.target.children ? 40 : 25;
+                      var nodesDistance = d.target._children ? 60 : d.target.children ? 25 : 15;
                       return nodesRadius + nodesDistance;
                       })
         .on("tick", tick);
@@ -362,6 +362,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             self.WriteDirectoryTree(SeedWidgets.Instances()[0].GetShape(children[i]), spaces + '__');
         }
     }
+    
+    
+    self.addCalls.push(function(shape) {
+        console.log(shape);
+    });
     
     return self;
 }
