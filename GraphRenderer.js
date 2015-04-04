@@ -20,21 +20,16 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     self.initCalls.push(function () {
         window.console&&console.log('Just loaded');
         $(domQuery).text("Just loaded the graph renderer.");
+        $(domQuery).append(
+            $('<button id="drawGraph">Draw graph</button>').click(function(){
+                self.collapsibleTree();
+            })
+        );
         
         //na vypisanie stromu po kliku, pretoze SeedWidgets.Instances()[0] je undefined pri prvom updateCalls
         document.addEventListener('click', this.onDocumentClick, false);
         document.addEventListener('click', this.onDocumentClick, false);
     });
-    
-    self.onDocumentClick = function onDocumentClick( event ) {
-        window.console&&console.log('click bubbled');
-        //$(domQuery).html('');
-        //var root = SeedWidgets.Instances()[0].GetShape(0);
-        //self.WriteDirectoryTree(root, '');
-        
-        //console.log(self.buildJson());
-        self.collapsibleTree();
-    }
     
     self.showInPopup = function () {
         if (self.popupWindow !== null && !self.popupWindow.closed) {
@@ -368,7 +363,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.addCalls.push(function(shape) {
         console.log(shape);
-        var seed = shape.relations.seed;
+        
+        /*var seed = shape.relations.seed;
         var parent = shape.relations.parent;
         
         if (self.treeNodes[seed] === undefined) {
@@ -382,8 +378,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             if (seedObject[parent].children === undefined) {
                 seedObject[parent]['children'] = [];
             }
-            seedObject.parent.children.push(shape);
-        }
+            seedObject[parent]children.push(shape);
+        }*/
     });
     
     return self;
