@@ -216,7 +216,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             // Enter any new nodes.
             nodeEnter.append("circle")
-            .attr("r", nodeRadius(d))
+            .attr("r", nodeRadius)
             .on("click", click);
             
             //add texts to nodes - try <foreignobject> and then <text> with tspan
@@ -263,7 +263,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             node.select("circle")
             .transition()
-            .attr("r", nodeRadius(d))
+            .attr("r", nodeRadius)
             .style("fill", color);
         }
         
