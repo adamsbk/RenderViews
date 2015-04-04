@@ -6,7 +6,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     self.popupWindow = null;
     
     self.root = null;
-    self.treeNodes = []; //to access self.root nodes in O(1) ... self.treeNodes[shape.id] = reference to node in self.root
+    self.treeNodes = new Object(); //to access self.root nodes in O(1) ... self.treeNodes[shape.id] = reference to node in self.root
     
     self.IsInitialized = function () {
         if (!self.initialized) {
@@ -107,6 +107,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     }
     
     self.collapsibleTree = function () {
+        
+        console.log(self.treeNodes);
         
         if ($(domQuery).children('svg').length) {
             return;
@@ -366,6 +368,22 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.addCalls.push(function(shape) {
         console.log(shape);
+        var seed = shape.relations.seed;
+        var parent = shape.relations.parent;
+        
+        if (self.treeNodes[seed] === undefined) {
+            self.treeNodes[seed] = new Object();
+        }
+        
+        var seedObject = self.treeNodes[seed];
+        seedObject[shape.id] = shape;
+        
+        if (parent in seedObject) {
+            if (seedObject[parent].children === undefined) {
+                seedObject[parent]['children'] = [];
+            }
+            seedObject.parent.children.push(shape);
+        }
     });
     
     return self;
