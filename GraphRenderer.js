@@ -210,7 +210,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             // Enter any new nodes.
             nodeEnter.append("circle")
             .attr("r", nodeRadius)
-            .on("click", click);
+            .on("click", click)
+            .on("mouseenter", nodeMouseOver)
+            .on("mouseleave", nodeMouseOver);
             
             //add texts to nodes - try <foreignobject> and then <text> with tspan
             //dx and x not worked when tspan x is set
@@ -324,23 +326,15 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             recurse(root);
             return nodes;
         }
-    }
-    
-    //picking
-    $(document).on({
-        "mouseenter": function() {
-            var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
-            if (shape) {
-                shape.interaction.visible(!shape.interaction.visible());
-            }
-        },
-        "mouseleave": function() {
-            var shape = SeedWidgets.Instances()[0].GetShape($(this).data('shape-id'));
+        
+        //node mouseenter, mouseleave
+        function nodeMouseOver(d) {
+            var shape = SeedWidgets.Instances()[0].GetShape(d.shapeId);
             if (shape) {
                 shape.interaction.visible(!shape.interaction.visible());
             }
         }
-    }, domQuery + " svg .node");
+    }
     
     self.WriteDirectoryTree = function (node, spaces) {
         if (!node) {
