@@ -5,6 +5,9 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.popupWindow = null;
     
+    self.root = null;
+    self.treeNodes = []; //to access self.root nodes in O(1) ... self.treeNodes[shape.id] = reference to node in self.root
+    
     self.IsInitialized = function () {
         if (!self.initialized) {
             self.initialized = true;
@@ -135,7 +138,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         .size([width, height])
         .gravity(.01)
         .charge(function(d) { return d._children ? -d.leafCount * 15 : -30; })
-        .linkDistance(function(d) { return d.target._children ? 60 : Math.sqrt(d.target.leafCount) * 25; })
+        .linkDistance(function(d) {
+                      var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
+                      var nodesDistance = d.target._children ? 60 : d.target.children ? 40 : 25;
+                      return nodesRadius + nodesDistance;
+                      })
         .on("tick", tick);
         
         var svg = d3.select(domQuery).append("svg")
@@ -209,7 +216,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             // Enter any new nodes.
             nodeEnter.append("circle")
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
+            .attr("r", nodeRadius(d))
             .on("click", click);
             
             //add texts to nodes - try <foreignobject> and then <text> with tspan
@@ -221,7 +228,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             .attr("width", 170)
             .attr("height", "5em")
             .style("transform", function(d) {
-                  var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
+                  var radius = nodeRadius(d);
                   return "translate(" + (radius - .3*radius) + "px, -2em)"; //x=right-30% from radius, y = 1.5em + .5em(padding)
                   });
             
@@ -235,7 +242,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             var texts = switchElem.append("text")
             .style("transform", function(d) {
-                  var radius = d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
+                  var radius = nodeRadius(d);
                   return "translate(" + (radius) + "px, 0)";
                   });
             
@@ -256,7 +263,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             
             node.select("circle")
             .transition()
-            .attr("r", function(d) { return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6; })
+            .attr("r", nodeRadius(d))
             .style("fill", color);
         }
         
@@ -274,6 +281,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         // Color leaf nodes orange, and packages white or blue.
         function color(d) {
             return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+        }
+        
+        // Compute radius for node - used more than 3 - placed in separated function
+        function nodeRadius(d) {
+            return d.children ? 6 : d._children ? Math.sqrt(d.descendatnCount) * 6 : 8;
         }
         
         // Toggle children.
