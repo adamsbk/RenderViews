@@ -101,7 +101,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.collapsibleTree = function () {
         
-        if ($(domQuery).children('svg').length) {
+        if ($(domQuery).children('svg').length || SeedWidgets.Instances().length > 0) {
             return;
         }
         /*d3.select(domQuery).append('button')
