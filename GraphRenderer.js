@@ -109,6 +109,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         .text('View graph in new window')
         .on('click', self.showInPopup);*/
         
+        console.log(self.treeNodes);
+        
         var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
@@ -354,7 +356,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     self.addCalls.push(function(shape) {
         console.log(shape);
         
-        /*var seed = shape.relations.seed;
+        var seed = shape.relations.seed;
         var parent = shape.relations.parent;
         
         if (self.treeNodes[seed] === undefined) {
@@ -369,7 +371,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                 seedObject[parent]['children'] = [];
             }
             seedObject[parent]children.push(shape);
-        }*/
+        }
     });
     
     return self;
