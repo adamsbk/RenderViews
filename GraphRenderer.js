@@ -9,7 +9,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
      * structure that holds tree structure for each shape prepared for d3.js
      * { seed.ID: { tree structure for d3.js }, ... }
      */
-    self.roots = null;
+    self.roots = new Object();
     
     /**
      * structure that holds pointers to self.roots nodes
@@ -365,27 +365,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     self.addCalls.push(function(shape) {
         console.log(shape);
         
-                       function buildJsonRec (node, jsonNode, level) {
-                       if (node.relations.IsLeaf()) {
-                       return;
-                       }
-                       var childNodes = seed.GetChildrenShapes(node);
-                       
-                       //create new property children and assign it to current jsonNode
-                       jsonNode['children'] = [];
-                       jsonNode = jsonNode['children'];
-                       for (var i=0; i<childNodes.length; i++) {
-                       if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
-                       var newNode = {
-                       "name": "child " + i,
-                       "shapeId": childNodes[i].id,
-                       "level": level
-                       };
-                       jsonNode.push(newNode);
-                       buildJsonRec(childNodes[i], newNode, level+1);
-                       }
-                       }
-                       }
         var isRoot = false;
         var seed = shape.relations.seed;
         var parent = shape.relations.parent;
