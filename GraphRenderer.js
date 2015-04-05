@@ -5,7 +5,16 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     
     self.popupWindow = null;
     
-    self.root = null;
+    /**
+     * structure that holds tree structure for each shape prepared for d3.js
+     * { seed.ID: { tree structure for d3.js }, ... }
+     */
+    self.roots = null;
+    
+    /**
+     * structure that holds pointers to self.roots nodes
+     * { seed.ID: { shape.id: node in self.roots, ... }, ... }
+     */
     self.treeNodes = new Object(); //to access self.root nodes in O(1) ... self.treeNodes[shape.id] = reference to node in self.root
     
     self.IsInitialized = function () {
@@ -118,7 +127,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
                       .node foreignObject body { margin: 0; padding: 0; background-color: transparent; }\n\
                       .node foreignObject .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
-                      .node foreignObject .node-info p { padding: 0; margin: 0; }\n\
+                      .node foreignObject .node-info p { padding: 0; margin: 0; line-height: 1.2em; font-size: 1em; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
         $('html > head').append(style);
@@ -356,21 +365,52 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     self.addCalls.push(function(shape) {
         console.log(shape);
         
+                       function buildJsonRec (node, jsonNode, level) {
+                       if (node.relations.IsLeaf()) {
+                       return;
+                       }
+                       var childNodes = seed.GetChildrenShapes(node);
+                       
+                       //create new property children and assign it to current jsonNode
+                       jsonNode['children'] = [];
+                       jsonNode = jsonNode['children'];
+                       for (var i=0; i<childNodes.length; i++) {
+                       if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
+                       var newNode = {
+                       "name": "child " + i,
+                       "shapeId": childNodes[i].id,
+                       "level": level
+                       };
+                       jsonNode.push(newNode);
+                       buildJsonRec(childNodes[i], newNode, level+1);
+                       }
+                       }
+                       }
+        var isRoot = false;
         var seed = shape.relations.seed;
         var parent = shape.relations.parent;
         
         if (self.treeNodes[seed] === undefined) {
             self.treeNodes[seed] = new Object();
+            isRoot = true;
         }
         
         var seedObject = self.treeNodes[seed];
-        seedObject[shape.id] = shape;
         
-        if (parent in seedObject) {
+        var newNode = {
+            "name": "node " + shape.id,
+            "shapeId": shape.id,
+            "level": isRoot ? 0 : seedObject[parent].level + 1
+        };
+        
+        seedObject[shape.id] = newNode;
+        if (isRoot) {
+            self.roots[seed] = newNode;
+        } else if (parent in seedObject) {
             if (seedObject[parent].children === undefined) {
                 seedObject[parent]['children'] = [];
             }
-            seedObject[parent].children.push(shape);
+            seedObject[parent].children.push(newNode);
         }
     });
     
