@@ -370,7 +370,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
             if (seedObject[parent].children === undefined) {
                 seedObject[parent]['children'] = [];
             }
-            seedObject[parent]children.push(shape);
+            seedObject[parent].children.push(shape);
         }
     });
     
