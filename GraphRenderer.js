@@ -288,7 +288,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
         //self.link = self.svg.selectAll(".link");
         //self.node = self.svg.selectAll(".node");
 
-        self.addTrees();
+        //self.addTrees();
     };
     this.init();
     
