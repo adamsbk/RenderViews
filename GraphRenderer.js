@@ -224,7 +224,8 @@ var GraphManager = (function () {
                     }
 
                     if (seedObject[parent].children === undefined) {
-                        seedObject.parent['children'] = [];
+                        //do not overwrite seedObject[parent] to seedObject.parent 
+                        seedObject[parent]['children'] = [];
                     }
                     seedObject[parent].children.push(newNode);
                 }
