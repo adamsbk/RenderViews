@@ -220,6 +220,7 @@ var GraphManager = (function () {
                         if (isLeaf) {
                             seedObject[currentPredecessor]['leafCount']++;
                         }
+                        currentPredecessor = seedObject[currentPredecessor].parentId;
                     }
 
                     if (seedObject[parent].children === undefined) {
