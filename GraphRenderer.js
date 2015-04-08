@@ -321,6 +321,9 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
     };*/
     
     this.addTree = function(seedID) {
+        if (self.trees[seedID] === undefined) {
+            self.trees[seedID] = new Object();
+        }
         self.trees[seedID].root = self.treeNodes[seedID][0];
         self.trees[seedID].root.fixed = true;
         self.trees[seedID].root.x = self.width / 2;
