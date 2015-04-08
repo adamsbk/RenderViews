@@ -329,7 +329,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
         self.trees[seedID].root.x = self.width / 2;
         self.trees[seedID].root.y = self.height / 2;
 
-        var SVGGroup = svg.append("g").attr("seedID", seedID);
+        var SVGGroup = self.svg.append("g").attr("seedID", seedID);
         self.trees[seedID].link = SVGGroup.selectAll(".link");
         self.trees[seedID].node = SVGGroup.selectAll(".node");
 
@@ -361,7 +361,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
                 .start();
 
         // Update the links…
-        tree.link = link.data(links, function (d) {
+        tree.link = tree.link.data(links, function (d) {
             return d.target.id;
         });
 
@@ -465,7 +465,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
                     return "Level: " + d.level;
                 });
 
-        node.select("circle")
+        tree.node.select("circle")
                 .transition()
                 .attr("r", nodeRadius)
                 .style("fill", color);
