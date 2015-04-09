@@ -545,8 +545,10 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
         function recurse(node) {
             if (node.children)
                 node.children.forEach(recurse);
-            if (!node.id)
-                node.id = ++i;
+            
+            //it has just assigned `id` attribute (starting with 0 so this rewrites it to 1 (!0)==true)
+            //if (!node.id)
+            //    node.id = ++i;
 
             nodes.push(node);
         }
