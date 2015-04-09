@@ -207,6 +207,8 @@ var GraphManager = (function () {
                     "leafCount": shape.relations.IsLeaf() ? 1 : 0
                 };
 
+                console.log(shape.id + ' : ' + newNode.id);
+
                 seedObject[shape.id] = newNode;
                 if (isRoot) {
                     roots[seed] = newNode;
@@ -224,7 +226,7 @@ var GraphManager = (function () {
                     }
 
                     if (seedObject[parent].children === undefined) {
-                        //do not overwrite seedObject[parent] to seedObject.parent 
+                        //do not overwrite seedObject[parent] to seedObject.parent because `parent` is numeric
                         seedObject[parent]['children'] = [];
                     }
                     seedObject[parent].children.push(newNode);
