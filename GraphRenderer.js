@@ -534,7 +534,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
             console.log(d);
             toggle(d);
             console.log(d);
-            update();
+            self.update();
         }
     }
 
