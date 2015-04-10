@@ -144,7 +144,7 @@ var GraphManager = (function () {
         var privateVariable = "Im also private";
         
         var treeNodes = new Object();
-        var roots = new Object();
+        //var roots = new Object();
         var width = null;
         var height = null;
         
@@ -211,7 +211,8 @@ var GraphManager = (function () {
 
                 seedObject[shape.id] = newNode;
                 if (isRoot) {
-                    roots[seed] = newNode;
+                    //roots[seed] = newNode;
+                    seedObject.root = seedObject[shape.id];
                     currentGraph.addTree(seed);
                 } else if (parent in seedObject) {
 
@@ -328,7 +329,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
         if (self.trees[seedID] === undefined) {
             self.trees[seedID] = new Object();
         }
-        self.trees[seedID].root = self.treeNodes[seedID][0];
+        self.trees[seedID].root = self.treeNodes[seedID].root;
         self.trees[seedID].root.fixed = true;
         self.trees[seedID].root.x = self.width / 2;
         self.trees[seedID].root.y = self.height / 2;
