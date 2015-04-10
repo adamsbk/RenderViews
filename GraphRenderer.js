@@ -105,9 +105,12 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         return rootJSON;
     };*/
     
+    //when clicked "go" button it removes all shapes of seed in the same order they were been added
     self.removeCalls.push(function (shape) {
         console.log('Seed removed...');
         console.log(shape);
+        
+        self.graphManager.removeShape(shape);
     });
     
     self.addCalls.push(function (shape) {
@@ -241,6 +244,23 @@ var GraphManager = (function () {
                     seedObject[parent].children.push(newNode);
                 }
                 
+                currentGraph.updateBySeedID(seed);
+            },
+            removeShape: function(shape) {
+                var seed = shape.relations.seed;
+                if (!(seed in treeNodes)) {
+                    throw "Seed of Shape you are removing is not defined.";
+                }
+                if (treeNodes[seed][shape.id] === undefined) {
+                    throw "There is not such a shape to remove";
+                }
+                //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
+                delete treeNodes[seed][shape.id];
+                if (treeNodes[seed].root.id === shape.id) {
+                    console.log("seed reference was deleted successfuly");
+                    delete treeNodes[seed].root;
+                    delete treeNodes[seed];
+                }
                 currentGraph.updateBySeedID(seed);
             },
             update: function() {
