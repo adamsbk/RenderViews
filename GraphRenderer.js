@@ -255,9 +255,11 @@ var GraphManager = (function () {
                     throw "There is not such a shape to remove";
                 }
                 //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
+                //instead delete could be assigned undefined - faster
                 delete treeNodes[seed][shape.id];
                 if (treeNodes[seed].root !== undefined && treeNodes[seed].root.id === shape.id) { //if this shape is parent shape
                     console.log("root reference was deleted successfuly");
+                    currentGraph.removeTree(seed);
                     delete treeNodes[seed].root;
                     
                     //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
@@ -299,6 +301,14 @@ function ForceCollapsible(svg, width, height) {
     
     this.addTree = function(tree) {
         this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg, width, height);
+    };
+    
+    this.removeTree = function(seedID) {
+        if (!(seedID in self.tree)) {
+            throw "There does not exist tree with property " + seedID + " in ForceCollapsible.trees object";
+        }
+        this.trees[seedID].remove();
+        delete this.trees[seedID];
     };
     
     this.updateEachTree = function() {
@@ -381,6 +391,10 @@ function ForceCollapsibleTree(tree, svg, width, height) {
 
         //this.update() is called in GraphManager when shape is added
         //self.update();
+    };
+    
+    this.remove = function() {
+        svg.select("g." + seedID).remove();
     };
     
     this.hideNodes = function(level) {
