@@ -256,7 +256,7 @@ var GraphManager = (function () {
                 }
                 //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
                 delete treeNodes[seed][shape.id];
-                if (treeNodes[seed].root.id === shape.id) {
+                if (treeNodes[seed].root !== undefined && treeNodes[seed].root.id === shape.id) { //if this shape is parent shape
                     console.log("root reference was deleted successfuly");
                     delete treeNodes[seed].root;
                     
