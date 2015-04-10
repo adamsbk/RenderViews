@@ -307,8 +307,8 @@ function ForceCollapsible(svg, width, height) {
         if (!(seedID in self.tree)) {
             throw "There does not exist tree with property " + seedID + " in ForceCollapsible.trees object";
         }
-        this.trees[seedID].remove();
-        delete this.trees[seedID];
+        self.trees[seedID].remove();
+        delete self.trees[seedID];
     };
     
     this.updateEachTree = function() {
