@@ -216,7 +216,7 @@ var GraphManager = (function () {
                     //roots[seed] = newNode;
                     seedObject.root = seedObject[shape.id];
                     seedObject.seedID = seed;
-                    currentGraph.addTree(seedObject);
+                    currentGraph.addTree(treeNodes[seed]);
                 } else if (parent in seedObject) {
 
                     var currentPredecessor = parent;
