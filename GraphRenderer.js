@@ -324,7 +324,6 @@ function ForceCollapsibleTree(tree, svg, width, height) {
 
         self.update();
     };
-    this.init();
     
     this.hideNodes = function(level) {
         //if there wont be any node.id `id` parameter it should be added before hiding nodes (like previous flatten(root)) which added `id`s to all node
@@ -554,4 +553,6 @@ function ForceCollapsibleTree(tree, svg, width, height) {
             shape.interaction.visible(!shape.interaction.visible());
         }
     }
+    
+    this.init();
 }
