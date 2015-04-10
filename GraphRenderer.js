@@ -265,7 +265,8 @@ var GraphManager = (function () {
                     //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
                     //delete treeNodes[seed];
                 }
-                currentGraph.updateBySeedID(seed);
+                //update not working because first removed shape is root in "go" reload
+                //currentGraph.updateBySeedID(seed);
             },
             update: function() {
                 
