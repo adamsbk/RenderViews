@@ -439,6 +439,18 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         //dx and x not worked when tspan x is set
         var switchElem = nodeEnter.append("switch");
 
+        //descendantCount and leafCount attributes should be updated on existing elements too - they are updated as new shape came
+        var allSwitch = node.selectAll("g switch");
+        var allForeignObject = allSwitch.select("foreignObject");
+        allForeignObject.select('.descendantCount')
+                .text(function (d) {
+                    return "Descendant count: " + d.descendatnCount;
+                });
+        allForeignObject.select('.leafCount')
+                .text(function (d) {
+                    return "Leaf count: " + d.leafCount;
+                });
+        
         var foreignObject = switchElem.append("foreignObject")
                 .attr("requiredExtensions", "http://www.w3.org/1999/xhtml")
                 .attr("width", 170)
@@ -452,12 +464,16 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         var containerElem = bodyElem.append("xhtml:div")
                 .attr("class", "node-info");
 
-        containerElem.append("xhtml:p").text(function (d) {
-            return "Descendant count: " + d.descendatnCount;
-        });
-        containerElem.append("xhtml:p").text(function (d) {
-            return "Leaf count: " + d.leafCount;
-        });
+        containerElem.append("xhtml:p")
+                .attr("class", "descendantCount")
+                .text(function (d) {
+                    return "Descendant count: " + d.descendatnCount;
+                });
+        containerElem.append("xhtml:p")
+                .attr("class", "leafCount")
+                .text(function (d) {
+                    return "Leaf count: " + d.leafCount;
+                });
         containerElem.append("xhtml:p").text(function (d) {
             return "Level: " + d.level;
         });
