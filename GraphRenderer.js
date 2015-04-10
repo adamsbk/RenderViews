@@ -214,9 +214,9 @@ var GraphManager = (function () {
                 seedObject[shape.id] = newNode;
                 if (isRoot) {
                     //roots[seed] = newNode;
-                    seedObject.root = seedObject[shape.id];
+                    seedObject.root = newNode;
                     seedObject.seedID = seed;
-                    currentGraph.addTree(treeNodes[seed]);
+                    currentGraph.addTree(seedObject);
                 } else if (parent in seedObject) {
 
                     var currentPredecessor = parent;
@@ -246,7 +246,8 @@ var GraphManager = (function () {
                 console.log("The public can see me!");
             },
             publicProperty: "I am also public",
-            publicTreeNodes: treeNodes
+            publicTreeNodes: treeNodes,
+            publicCurrentGraph: currentGraph
         };
 
     }
@@ -316,7 +317,9 @@ function ForceCollapsible(svg, width, height) {
 function ForceCollapsibleTree(tree, svg, width, height) {
     
     var self = this;
-        
+    
+    this.publicTree = tree;
+    
     //private properties
     var seedID = tree.seedID;
     var root = tree.root;
