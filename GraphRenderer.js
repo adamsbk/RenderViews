@@ -152,6 +152,22 @@ var GraphManager = (function () {
 
             console.log(treeNodes);
 
+            addStyles();
+
+            //container for graph controls (inputs for collapsing graph, ...)
+            $(domQuery).append('<div id="graphControls" data-bind="html: "></div>');
+
+            $(domQuery).width(720);
+            $(domQuery).height(600);
+            width = $(domQuery).width();
+            height = $(domQuery).height();
+            
+            svg = d3.select(domQuery).append("svg")
+                .attr("width", width)
+                .attr("height", height);
+        }
+        
+        function addStyles() {
             var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
@@ -163,17 +179,8 @@ var GraphManager = (function () {
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
             $('html > head').append(style);
-
-            $(domQuery).width(720);
-            $(domQuery).height(600);
-            width = $(domQuery).width();
-            height = $(domQuery).height();
-            
-            svg = d3.select(domQuery).append("svg")
-                .attr("width", width)
-                .attr("height", height);
         }
-
+        
         function privateMethod() {
             console.log("I am private");
         }
@@ -238,7 +245,8 @@ var GraphManager = (function () {
             publicMethod: function () {
                 console.log("The public can see me!");
             },
-            publicProperty: "I am also public"
+            publicProperty: "I am also public",
+            publicTreeNodes: treeNodes
         };
 
     }
@@ -261,11 +269,6 @@ function ForceCollapsible(svg, width, height) {
     //this.treeNodes = treeNodes;
     this.trees = new Object();
     
-    
-    
-    //this.link = null;
-    //this.node = null;
-    
     this.addTree = function(tree) {
         this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg, width, height);
     };
@@ -284,6 +287,29 @@ function ForceCollapsible(svg, width, height) {
         } else {
             throw "Tree with seedID `" + seedID + "` was not initialised.";
         }
+    };
+    
+    this.addControls = function() {
+        $('#graphControls').append('\n\
+            <form class="form-inline">\n\
+              <div class="form-group form-group-sm">\n\
+                <label for="levelInput">Level</label>\n\
+                <input type="text" class="form-control" id="levelInput">\n\
+              </div>\n\
+              <div class="form-group form-group-sm">\n\
+                <label for="seedInput">Seed</label>\n\
+                <select class="form-control" id="seedInput" data-bind="options: ">\n\
+                    <option>1</option>\n\
+                    <option>2</option>\n\
+                    <option>3</option>\n\
+                    <option>4</option>\n\
+                    <option>5</option>\n\
+                </select>\n\
+                <input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">\n\
+              </div>\n\
+              <button type="submit" class="btn btn-default btn-sm">Send invitation</button>\n\
+            </form>\n\
+        ');
     };
 }
 
@@ -320,9 +346,11 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         root.x = width / 2;
         root.y = height / 2;
 
-        self.hideNodes(3);
+        //It makes no sense to call hideNodes when tree is not completely loaded - this.init() is called when only root is added
+        //self.hideNodes(3);
 
-        self.update();
+        //this.update() is called in GraphManager when shape is added
+        //self.update();
     };
     
     this.hideNodes = function(level) {
