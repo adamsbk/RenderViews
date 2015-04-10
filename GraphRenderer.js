@@ -257,9 +257,11 @@ var GraphManager = (function () {
                 //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
                 delete treeNodes[seed][shape.id];
                 if (treeNodes[seed].root.id === shape.id) {
-                    console.log("seed reference was deleted successfuly");
+                    console.log("root reference was deleted successfuly");
                     delete treeNodes[seed].root;
-                    delete treeNodes[seed];
+                    
+                    //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
+                    //delete treeNodes[seed];
                 }
                 currentGraph.updateBySeedID(seed);
             },
