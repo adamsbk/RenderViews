@@ -299,7 +299,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     var force = null;
     
     this.init = function() {
-        self.force = d3.layout.force()
+        force = d3.layout.force()
                 .size([width, height])
                 .gravity(.01)
                 .charge(function (d) {
@@ -317,8 +317,8 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         node = SVGGroup.selectAll(".node");
         
         root.fixed = true;
-        root.x = self.width / 2;
-        root.y = self.height / 2;
+        root.x = width / 2;
+        root.y = height / 2;
 
         self.hideNodes(3);
 
@@ -349,7 +349,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
                 links = d3.layout.tree().links(nodes);
 
         // Restart the force layout.
-        self.force
+        force
                 .nodes(nodes)
                 .links(links)
                 .start();
@@ -396,7 +396,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
                 .attr("data-level", function (d) {
                     return d.level;
                 })
-                .call(self.force.drag);
+                .call(force.drag);
 
         // Enter any new nodes.
         nodeEnter.append("circle")
