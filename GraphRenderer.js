@@ -548,7 +548,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     
     //node mouseenter, mouseleave
     function nodeMouseOver(d) {
-        var shape = SeedWidgets.Instances()[0].GetShape(d.shapeId);
+        var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
         if (shape) {
             shape.interaction.visible(!shape.interaction.visible());
         }
