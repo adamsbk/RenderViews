@@ -394,7 +394,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     };
     
     this.remove = function() {
-        svg.select("g[seedID=" + seedID + "]").remove();
+        svg.select('g[seedID="' + seedID + '"]').remove();
     };
     
     this.hideNodes = function(level) {
