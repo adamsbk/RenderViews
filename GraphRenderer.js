@@ -10,20 +10,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
 
     self.popupWindow = null;
 
-    /**
-     * structure that holds tree structure for each shape prepared for d3.js
-     * { seed.ID: { tree structure for d3.js }, ... }
-     *
-     * not necesary - the same as self.treeNodes[shape.id][0] == self.roots[shape.id]
-     */
-    self.roots = new Object();
-
-    /**
-     * structure that holds pointers to self.roots nodes
-     * { seed.ID: { shape.id: node in self.roots, ... }, ... }
-     */
-    self.treeNodes = new Object(); //to access self.root nodes in O(1) ... self.treeNodes[shape.id] = reference to node in self.root
-
     self.graphManager = null;
 
     self.IsInitialized = function () {
@@ -143,14 +129,19 @@ var GraphManager = (function () {
         
         var privateVariable = "Im also private";
         
+        /**
+         * structure that holds pointers to self.roots nodes
+         * { seed.ID: { shape.id: node in self.roots, ... }, ... }
+         */
         var treeNodes = new Object();
-        //var roots = new Object();
+        
         var width = null;
         var height = null;
+        var svg = null;
         
         addToDOM();
         
-        var forceCollaps = new ForceCollapsible(treeNodes, domQuery, width, height);
+        var forceCollaps = new ForceCollapsible(svg, width, height);
         var currentGraph = forceCollaps;
         
         function addToDOM() {
@@ -177,6 +168,10 @@ var GraphManager = (function () {
             $(domQuery).height(600);
             width = $(domQuery).width();
             height = $(domQuery).height();
+            
+            svg = d3.select(domQuery).append("svg")
+                .attr("width", width)
+                .attr("height", height);
         }
 
         function privateMethod() {
@@ -213,7 +208,8 @@ var GraphManager = (function () {
                 if (isRoot) {
                     //roots[seed] = newNode;
                     seedObject.root = seedObject[shape.id];
-                    currentGraph.addTree(seed);
+                    seedObject.seedID = seed;
+                    currentGraph.addTree(seedObject);
                 } else if (parent in seedObject) {
 
                     var currentPredecessor = parent;
@@ -257,24 +253,54 @@ var GraphManager = (function () {
     };
 })();
 
-function ForceCollapsible(treeNodes, domQuery, width, height) {
+function ForceCollapsible(svg, width, height) {
     
     var self = this;
     
     //parameters
-    this.treeNodes = treeNodes;
+    //this.treeNodes = treeNodes;
     this.trees = new Object();
-    this.width = width;
-    this.height = height;
     
-    this.force = null;
-    this.svg = null;
+    
+    
     //this.link = null;
     //this.node = null;
     
+    this.addTree = function(tree) {
+        this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg, width, height);
+    };
+    
+    this.updateEachTree = function() {
+        for (var seedID in self.trees) {
+            if (self.trees.hasOwnProperty(seedID)) {
+                self.trees[seedID].update(); //update method from ForceCollapsibleTree object
+            }
+        }
+    };
+
+    this.updateBySeedID = function (seedID) {
+        if (seedID in self.trees) {
+            self.trees[seedID].update();
+        } else {
+            throw "Tree with seedID `" + seedID + "` was not initialised.";
+        }
+    };
+}
+
+function ForceCollapsibleTree(tree, svg, width, height) {
+    
+    var self = this;
+        
+    //private properties
+    var seedID = tree.seedID;
+    var root = tree.root;
+    var link = null;
+    var node = null;
+    var force = null;
+    
     this.init = function() {
         self.force = d3.layout.force()
-                .size([self.width, self.height])
+                .size([width, height])
                 .gravity(.01)
                 .charge(function (d) {
                     return d._children ? -d.leafCount * 15 : -30;
@@ -285,19 +311,22 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
                     return nodesRadius + nodesDistance;
                 })
                 .on("tick", tick);
+        
+        var SVGGroup = svg.append("g").attr("seedID", seedID);
+        link = SVGGroup.selectAll(".link");
+        node = SVGGroup.selectAll(".node");
+        
+        root.fixed = true;
+        root.x = self.width / 2;
+        root.y = self.height / 2;
 
-        self.svg = d3.select(domQuery).append("svg")
-                .attr("width", self.width)
-                .attr("height", self.height);
+        self.hideNodes(3);
 
-        //self.link = self.svg.selectAll(".link");
-        //self.node = self.svg.selectAll(".node");
-
-        //self.addTrees();
+        self.update();
     };
     this.init();
     
-    this.hideNodes = function(root, level) {
+    this.hideNodes = function(level) {
         //if there wont be any node.id `id` parameter it should be added before hiding nodes (like previous flatten(root)) which added `id`s to all node
         
         function recurse(node) {
@@ -314,49 +343,9 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
 
         recurse(root);
     };
-    
-    /*this.addTrees = function() {
-        for (var seedID in self.treeNodes) {
-            if (self.treeNodes.hasOwnProperty(seedID)) {
-                if (!(seedID in self.trees)) {
-                    self.addTree(seedID);
-                }
-            }
-        }
-    };*/
-    
-    this.addTree = function(seedID) {
-        if (self.trees[seedID] === undefined) {
-            self.trees[seedID] = new Object();
-        }
-        self.trees[seedID].root = self.treeNodes[seedID].root;
-        self.trees[seedID].root.fixed = true;
-        self.trees[seedID].root.x = self.width / 2;
-        self.trees[seedID].root.y = self.height / 2;
 
-        var SVGGroup = self.svg.append("g").attr("seedID", seedID);
-        self.trees[seedID].link = SVGGroup.selectAll(".link");
-        self.trees[seedID].node = SVGGroup.selectAll(".node");
-
-        self.hideNodes(self.trees[seedID].root, 3);
-
-        self.update(self.trees[seedID]);
-    };
-
-    this.updateEachRoot = function() {
-        for (var seedID in self.trees) {
-            if (self.trees.hasOwnProperty(seedID)) {
-                self.update(self.trees[seedID], seedID);
-            }
-        }
-    };
-
-    this.updateBySeedID = function (seedID) {
-        self.update(self.trees[seedID], seedID);
-    };
-
-    this.update = function (tree, treeID) {
-        var nodes = flatten(tree.root),
+    this.update = function () {
+        var nodes = flatten(root),
                 links = d3.layout.tree().links(nodes);
 
         // Restart the force layout.
@@ -366,15 +355,15 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
                 .start();
 
         // Update the links…
-        tree.link = tree.link.data(links, function (d) {
+        link = link.data(links, function (d) {
             return d.target.id;
         });
 
         // Exit any old links.
-        tree.link.exit().remove();
+        link.exit().remove();
 
         // Enter any new links.
-        tree.link.enter().insert("line", ".node")
+        link.enter().insert("line", ".node")
                 .attr("class", "link")
                 .attr("x1", function (d) {
                     return d.source.x;
@@ -390,14 +379,14 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
                 });
 
         // Update the nodes…
-        tree.node = tree.node.data(nodes, function (d) {
+        node = node.data(nodes, function (d) {
             return d.id;
         });
 
         // Exit any old nodes.
-        tree.node.exit().remove();
+        node.exit().remove();
 
-        var nodeEnter = tree.node.enter().append("g")
+        var nodeEnter = node.enter().append("g")
                 .attr("class", function (d) {
                     return d.children ? "node" : "node leaf";
                 })
@@ -470,14 +459,14 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
                     return "Level: " + d.level;
                 });
 
-        tree.node.select("circle")
+        node.select("circle")
                 .transition()
                 .attr("r", nodeRadius)
                 .style("fill", color);
     };
 
     function tick() {
-        self.trees[0].link.attr("x1", function (d) {
+        link.attr("x1", function (d) {
             return d.source.x;
         })
                 .attr("y1", function (d) {
@@ -492,7 +481,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
 
         //node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
         //.attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
-        self.trees[0].node.attr("transform", function (d) {
+        node.attr("transform", function (d) {
             var radius = nodeRadius(d);
             var cx = Math.max(radius, Math.min(width - radius, d.x));
             var cy = Math.max(radius, Math.min(height - radius, d.y));
@@ -535,7 +524,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
             console.log(d);
             toggle(d);
             console.log(d);
-            self.update(self.trees[0], 0);
+            self.update();
         }
     }
 
@@ -557,7 +546,7 @@ function ForceCollapsible(treeNodes, domQuery, width, height) {
         recurse(root);
         return nodes;
     }
-
+    
     //node mouseenter, mouseleave
     function nodeMouseOver(d) {
         var shape = SeedWidgets.Instances()[0].GetShape(d.shapeId);
