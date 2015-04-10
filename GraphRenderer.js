@@ -105,12 +105,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         return rootJSON;
     };*/
     
-    self.updateCalls.push(function () {
-        console.log('Update call...');
-    });
-    
     self.removeCalls.push(function (shape) {
-        console.log('Seed removed...');
+        console.log('Seed removed...' + shape);
     });
     
     self.addCalls.push(function (shape) {
