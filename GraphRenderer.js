@@ -106,7 +106,8 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     };*/
     
     self.removeCalls.push(function (shape) {
-        console.log('Seed removed...' + shape);
+        console.log('Seed removed...');
+        console.log(shape);
     });
     
     self.addCalls.push(function (shape) {
