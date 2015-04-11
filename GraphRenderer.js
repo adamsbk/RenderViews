@@ -304,7 +304,6 @@ function ForceCollapsible(svg, width, height) {
     
     this.init = function() {
         self.addControls();
-        self.controlsViewModel();
     };
     
     this.addTree = function(tree) {
