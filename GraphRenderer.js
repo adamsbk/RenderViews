@@ -110,13 +110,33 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         console.log('Seed removed...');
         console.log(shape);
         
+        //remove picking subscription
+        var id = shape.id;
+        if (id in this.Subscriptions) {
+            for (var t in this.Subscriptions[id])
+                this.Subscriptions[id][t].dispose();
+
+            delete this.Subscriptions[id];
+        }   
+        
         self.graphManager.removeShape(shape);
     });
     
     self.addCalls.push(function (shape) {
         console.log(shape);
-        
+        //picking subscriptions are added and removed in graphManager
         self.graphManager.addShape(shape);
+        
+        var id = shape.id;
+        var pickSubscription = shape.interaction.picked.subscribe(function (newVal) {
+            self.graphManager.interactionChanged(shape.relations.seed, shape.id, newVal);
+        }.bind(self));
+        
+        //adding subscription to object to make it possible to store multiple subscriptions per shape
+        if (id in this.Subscriptions)
+            this.Subscriptions[id].pick = pickSubscription;
+        else
+            this.Subscriptions[id] = {pick: pickSubscription};
     });
 
     return self;
@@ -179,6 +199,7 @@ var GraphManager = (function () {
             var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
+                      .node[picked=yes] { fill: red !important; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
                       .node foreignObject body { margin: 0; padding: 0; background-color: transparent; }\n\
@@ -267,6 +288,9 @@ var GraphManager = (function () {
                 }
                 //update not working because first removed shape is root in "go" reload
                 //currentGraph.updateBySeedID(seed);
+            },
+            interactionChanged: function(seedID, shapeID, newVal) {
+                currentGraph.interactionChanged(seedID, shapeID, newVal);
             },
             update: function() {
                 
@@ -376,6 +400,13 @@ function ForceCollapsible(svg, width, height) {
         }
     };
     
+    this.interactionChanged = function(seedID, shapeID, newVal) {
+        if (!(seedID in self.trees)) {
+            throw "There is not seed with seedID `" + seedID + "` to change interaction.";
+        }
+        self.trees[seedID].interactionChanged(shapeID, newVal);
+    };
+    
     self.init();
 }
 
@@ -419,6 +450,16 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     
     this.remove = function() {
         svg.select('g[seedID="' + seedID + '"]').remove();
+    };
+    
+    this.interactionChanged = function(shapeID, newVal) {
+        if (!(shapeID in tree)) {
+            throw "There is no shape with shapeID `" + shapeID + "` to change interaction.";
+        }
+        var nodeWithShapeID = node.select('g[data-shape-id="'+ shapeID +'"]');
+        
+        //.attr('name', null) removes attribute `name` from element
+        nodeWithShapeID.attr("picked", newVal ? "yes" : null);
     };
     
     this.hideNodes = function(level) {
