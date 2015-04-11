@@ -336,7 +336,7 @@ function ForceCollapsible(svg, width, height) {
     };
     
     this.collapseTrees = function(level, seedID) {
-        if (typeof seedID === undefined) { //if seedID is undefined collapse each tree
+        if (seedID === undefined) { //if seedID is undefined collapse each tree
             for (var seedID in self.trees) {
                 if (self.trees.hasOwnProperty(seedID)) {
                     self.trees[seedID].hideNodes(level);
