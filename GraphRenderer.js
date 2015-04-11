@@ -433,8 +433,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
                 node.children.forEach(recurse);
 
             if (node.level >= level) {
-                if (node.children && node.children.length > 1) {
-                    //console.log("toggled level " + node.level);
+                if (node.children && (node.children.length > 1 || node.level == level)) {
                     toggle(node);
                 }
             }
