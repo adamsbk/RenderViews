@@ -370,8 +370,7 @@ function ForceCollapsible(svg, width, height) {
     
     this.submitControls = function(event) {
         event.preventDefault();
-        var level = $(this).find('#levelInput');
-        alert('Level ' + level);
+        var level = $(this).find('#levelInput').val();
         if (level >=0 && Math.floor(level) == level && $.isNumeric(level)) {
             self.collapseTrees(this.levelValue);
         }
