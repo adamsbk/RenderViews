@@ -376,7 +376,9 @@ function ForceCollapsible(svg, width, height) {
                 self.collapseTrees(this.levelValue);
             }
         };
-        ko.applyBindings(self.viewModel, document.getElementById('forceCollapsibleControls'));
+        var formElem = document.getElementById('forceCollapsibleControls');
+        ko.cleanNode(formElem);
+        ko.applyBindings(self.viewModel, formElem);
     };
     
     self.init();
