@@ -199,7 +199,7 @@ var GraphManager = (function () {
             var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
-                      .node[picked=yes] { fill: red !important; }\n\
+                      .node[picked=yes] circle { fill: red !important; }\n\
                       .node text, .node foreignObject { display: none; }\n\
                       .node:hover text, .node:hover foreignObject { display: block; }\n\
                       .node foreignObject body { margin: 0; padding: 0; background-color: transparent; }\n\
