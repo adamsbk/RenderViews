@@ -352,33 +352,29 @@ function ForceCollapsible(svg, width, height) {
     };
     
     this.addControls = function() {
-        $('#graphControls').append('\n\
-            <form class="form-inline" id="forceCollapsibleControls" data-bind="submit: forceCollapsibleSubmitted">\n\
+        $('#graphControls').append($('\n\
+            <form class="form-inline" id="forceCollapsibleControls">\n\
               <div class="form-group form-group-sm">\n\
                 <label for="levelInput">Level</label>\n\
-                <input type="text" class="form-control" id="levelInput" data-bind="value: levelValue">\n\
+                <input type="text" class="form-control" id="levelInput">\n\
               </div>\n\
               <div class="form-group form-group-sm">\n\
                 <label for="seedInput">Seed</label>\n\
-                <select class="form-control" id="seedInput" data-bind="options: seedControls">\n\
+                <select class="form-control" id="seedInput">\n\
+                    <option value="-1">all</option>\n\
                 </select>\n\
               </div>\n\
               <button type="submit" class="btn btn-default btn-sm">Do</button>\n\
             </form>\n\
-        ');
+        ').submit(self.submitControls));
     };
     
-    this.controlsViewModel = function() {
-        self.viewModel = {
-            levelValue: ko.observable(""),
-            seedControls: ko.observableArray(['all']),
-            forceCollapsibleSubmitted: function(formElement) {
-                self.collapseTrees(this.levelValue);
-            }
-        };
-        var formElem = document.getElementById('forceCollapsibleControls');
-        ko.cleanNode(formElem);
-        ko.applyBindings(self.viewModel, formElem);
+    this.submitControls = function(event) {
+        event.preventDefault();
+        var level = $(this).find('#levelInput');
+        if (level >=0 && Math.floor(level) == level && $.isNumeric(level)) {
+            self.collapseTrees(this.levelValue);
+        }
     };
     
     self.init();
