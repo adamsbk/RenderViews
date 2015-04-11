@@ -363,7 +363,7 @@ function ForceCollapsible(svg, width, height) {
                     <option value="-1">all</option>\n\
                 </select>\n\
               </div>\n\
-              <button type="submit" class="btn btn-default btn-sm">Do</button>\n\
+              <button type="submit" class="btn btn-default btn-sm">Cluster</button>\n\
             </form>\n\
         ').submit(self.submitControls));
     };
@@ -411,14 +411,10 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         node = SVGGroup.selectAll(".node");
         
         root.fixed = true;
-        root.x = width / 2;
-        root.y = height / 2;
-
-        //It makes no sense to call hideNodes when tree is not completely loaded - this.init() is called when only root is added
-        //self.hideNodes(3);
-
-        //this.update() is called in GraphManager when shape is added
-        //self.update();
+        //20% margin ... w*0.2+Math.random()*w*0.6
+        root.x = width * .2 + Math.random() * width * .6;
+        root.y = height * .2 + Math.random() * height * .6;
+        
     };
     
     this.remove = function() {
@@ -666,7 +662,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     function nodeMouseOver(d) {
         var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
         if (shape) {
-            shape.interaction.visible(!shape.interaction.visible());
+            shape.interaction.picked(!shape.interaction.picked());
         }
     }
     
