@@ -338,7 +338,6 @@ function ForceCollapsible(svg, width, height) {
         if (seedID === undefined) { //if seedID is undefined collapse each tree
             for (var seedID in self.trees) {
                 if (self.trees.hasOwnProperty(seedID)) {
-                    console.log("called t.hideNodes(level)");
                     self.trees[seedID].hideNodes(level);
                 }
             }
@@ -372,9 +371,7 @@ function ForceCollapsible(svg, width, height) {
     this.submitControls = function(event) {
         event.preventDefault();
         var level = $(this).find('#levelInput').val();
-        console.log(level);
         if (level >=0 && Math.floor(level) == level && $.isNumeric(level)) {
-            console.log("Collapse!");
             self.collapseTrees(level);
         }
     };
@@ -444,6 +441,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         }
 
         recurse(root);
+        self.update();
     };
 
     this.update = function () {
