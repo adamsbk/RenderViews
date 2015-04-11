@@ -1,4 +1,4 @@
-/*global d3, SeedWidgets, AbstractRenderer, ShapeNode */
+/*global d3, SeedWidgets, AbstractRenderer, ShapeNode, ko */
 
 function GraphRenderer(domQuery) { //for a whole window call with domQuery "<body>"
 
@@ -300,6 +300,13 @@ function ForceCollapsible(svg, width, height) {
     //this.treeNodes = treeNodes;
     this.trees = new Object();
     
+    this.viewModel = null;
+    
+    this.init = function() {
+        self.addControls();
+        self.controlsViewModel();
+    };
+    
     this.addTree = function(tree) {
         this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg, width, height);
     };
@@ -328,28 +335,51 @@ function ForceCollapsible(svg, width, height) {
         }
     };
     
+    this.collapseTrees = function(level, seedID) {
+        if (typeof seedID === undefined) { //if seedID is undefined collapse each tree
+            for (var seedID in self.trees) {
+                if (self.trees.hasOwnProperty(seedID)) {
+                    self.trees[seedID].hideNodes(level);
+                }
+            }
+        } else {
+            if (seedID in self.trees) {
+                self.trees[seedID].hideNodes(level);
+            } else {
+                throw "There is not tree with SeedID " + seedID + " to collapse";
+            }
+        }
+    };
+    
     this.addControls = function() {
         $('#graphControls').append('\n\
-            <form class="form-inline">\n\
+            <form class="form-inline" id="forceCollapsibleControls" data-bind="submit: forceCollapsibleSubmitted">\n\
               <div class="form-group form-group-sm">\n\
                 <label for="levelInput">Level</label>\n\
-                <input type="text" class="form-control" id="levelInput">\n\
+                <input type="text" class="form-control" id="levelInput" data-bind="value: levelValue">\n\
               </div>\n\
               <div class="form-group form-group-sm">\n\
                 <label for="seedInput">Seed</label>\n\
-                <select class="form-control" id="seedInput" data-bind="options: ">\n\
-                    <option>1</option>\n\
-                    <option>2</option>\n\
-                    <option>3</option>\n\
-                    <option>4</option>\n\
-                    <option>5</option>\n\
+                <select class="form-control" id="seedInput" data-bind="options: seedControls">\n\
                 </select>\n\
-                <input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com">\n\
               </div>\n\
-              <button type="submit" class="btn btn-default btn-sm">Send invitation</button>\n\
+              <button type="submit" class="btn btn-default btn-sm">Do</button>\n\
             </form>\n\
         ');
     };
+    
+    this.controlsViewModel = function() {
+        self.viewModel = {
+            levelValue: ko.observable(""),
+            seedControls: ko.observableArray(['all']),
+            forceCollapsibleSubmitted: function(formElement) {
+                self.collapseTrees(this.levelValue);
+            }
+        };
+        ko.applyBindings(self.viewModel, document.getElementById('forceCollapsibleControls'));
+    };
+    
+    self.init();
 }
 
 function ForceCollapsibleTree(tree, svg, width, height) {
