@@ -163,7 +163,7 @@ var GraphManager = (function () {
             addStyles();
 
             //container for graph controls (inputs for collapsing graph, ...)
-            $(domQuery).append('<div id="graphControls" data-bind="html: "></div>');
+            $(domQuery).append('<div id="graphControls"></div>');
 
             $(domQuery).width(720);
             $(domQuery).height(600);
