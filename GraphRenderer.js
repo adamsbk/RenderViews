@@ -106,13 +106,11 @@ var GraphManager = (function () {
          */
         var treeNodes = new Object();
         
-        var width = null;
-        var height = null;
         var svg = null;
         
         addToDOM();
         
-        var forceCollaps = new ForceCollapsible(svg, width, height);
+        var forceCollaps = new ForceCollapsible(svg);
         var currentGraph = forceCollaps;
         
         function addToDOM() {
@@ -128,19 +126,19 @@ var GraphManager = (function () {
             //container for graph controls (inputs for collapsing graph, ...)
             $(domQuery).append('<div id="graphControls"></div>');
 
-            $(domQuery).width(720);
-            $(domQuery).height(600);
-            width = $(domQuery).width();
-            height = $(domQuery).height();
+            var width = $(domQuery).width();
+            var height = $(domQuery).height();
             
             svg = d3.select(domQuery).append("svg")
                 .attr("width", width)
                 .attr("height", height);
+        
+            addAutoSVGResize();
         }
         
         function addStyles() {
             var style = $("<style>\n\
-                      " + domQuery + " > svg { overflow: visible; }\n\
+                      " + domQuery + " > svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
@@ -151,6 +149,14 @@ var GraphManager = (function () {
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
             $('html > head').append(style);
+        }
+        
+        function addAutoSVGResize() {
+            $(window).resize(function () {
+                $(domQuery + " > svg")
+                        .attr("width", $(domQuery).width())
+                        .attr("height", $(domQuery).height());
+            });
         }
         
         function privateMethod() {
@@ -259,7 +265,7 @@ var GraphManager = (function () {
     };
 })();
 
-function ForceCollapsible(svg, width, height) {
+function ForceCollapsible(svg) {
     
     var self = this;
     
@@ -268,13 +274,13 @@ function ForceCollapsible(svg, width, height) {
     this.trees = new Object();
     
     this.viewModel = null;
-    
+        
     this.init = function() {
         self.addControls();
     };
     
     this.addTree = function(tree) {   
-        this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg, width, height);
+        this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg);
         
         $('#seedInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
@@ -362,7 +368,7 @@ function ForceCollapsible(svg, width, height) {
     self.init();
 }
 
-function ForceCollapsibleTree(tree, svg, width, height) {
+function ForceCollapsibleTree(tree, svg) {
     
     var self = this;
     
@@ -374,6 +380,9 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     var link = null;
     var node = null;
     var force = null;
+    
+    var width = svg.attr('width');
+    var height = svg.attr('height');
     
     this.init = function() {
         force = d3.layout.force()
@@ -398,6 +407,13 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         root.x = width * .2 + Math.random() * width * .6;
         root.y = height * .2 + Math.random() * height * .6;
         
+        //set ratio root.x:width and root.y:height to reset root in svg resize
+        root.positionRatio = {
+            left: root.x / width,
+            top: root.y / height
+        };
+        
+        responsiveLayout();
     };
     
     this.remove = function() {
@@ -674,6 +690,17 @@ function ForceCollapsibleTree(tree, svg, width, height) {
                 }
             });
         }
+    }
+    
+    function responsiveLayout() {
+        $(window).resize(function () {
+            width = svg.attr('width');
+            height = svg.attr('height');
+            
+            force.size([width, height]).resume();
+            root.x = root.positionRatio.left * width;
+            root.y = root.positionRatio.top * height;
+        });
     }
     
     this.init();
