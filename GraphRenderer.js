@@ -48,62 +48,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         $(newDomQuery).html($(domQuery).clone(true));
         domQuery = newDomQuery;
     };
-
-    /*self.buildJson = function () {
-
-        var seed = SeedWidgets.Instances()[0];
-
-        function buildJsonRec(node, jsonNode, level) {
-            if (node.relations.IsLeaf()) {
-                return;
-            }
-            var childNodes = seed.GetChildrenShapes(node);
-
-            //create new property children and assign it to current jsonNode
-            jsonNode.children = [];
-            jsonNode = jsonNode['children'];
-            for (var i = 0; i < childNodes.length; i++) {
-                if (childNodes[i] instanceof ShapeNode) { //in case of childNodes is Array [ Object, null ]
-                    var newNode = {
-                        "name": "child " + i,
-                        "shapeId": childNodes[i].id,
-                        "level": level
-                    };
-                    jsonNode.push(newNode);
-                    buildJsonRec(childNodes[i], newNode, level + 1);
-                }
-            }
-        }
-
-        function addDescendantCountProperty(node) {
-            if (!('children' in node)) {
-                node['descendatnCount'] = 0;
-                node['leafCount'] = 1;
-                return;
-            }
-            var count = 0;
-            var leafCount = 0;
-            for (var i = 0; i < node.children.length; i++) {
-                addDescendantCountProperty(node.children[i]);
-                count += node.children[i].descendatnCount + 1;
-                leafCount += node.children[i].leafCount;
-            }
-            node['descendatnCount'] = count;
-            node['leafCount'] = leafCount;
-        }
-
-        var root = SeedWidgets.Instances()[0].GetShape(0);
-        var rootJSON = {
-            "name": "root",
-            "shapeId": root.id,
-            "level": 0
-        };
-
-        buildJsonRec(root, rootJSON, 1);
-        addDescendantCountProperty(rootJSON);
-
-        return rootJSON;
-    };*/
     
     //when clicked "go" button it removes all shapes of seed in the same order they were been added
     self.removeCalls.push(function (shape) {
@@ -703,7 +647,21 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     function nodeMouseOver(d) {
         var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
         if (shape) {
+            if (shape.interaction.IsLeaf()) {
+                shape.interaction.picked(!shape.interaction.picked());
+            } else {
+                pickAllChildren(shape);
+            }
+        }
+    }
+    
+    function pickAllChildren(shape) {
+        if (shape.relations.IsLeaf()) {
             shape.interaction.picked(!shape.interaction.picked());
+        } else if (shape.relations.children) {
+            shape.relations.children.forEach(function(entry, i){
+                pickAllChildren(shape);
+            });
         }
     }
     
