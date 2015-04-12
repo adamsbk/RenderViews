@@ -660,7 +660,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
             shape.interaction.picked(!shape.interaction.picked());
         } else if (shape.relations.children) {
             shape.relations.children.forEach(function(entry, i){
-                pickAllChildren(shape);
+                pickAllChildren(entry);
             });
         }
     }
