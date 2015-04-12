@@ -659,9 +659,10 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         if (shape.relations.IsLeaf()) {
             shape.interaction.picked(!shape.interaction.picked());
         } else if (shape.relations.children) {
-            shape.relations.children.forEach(function(entry, i){
-                if (entry instanceof ShapeNode) {
-                    pickAllChildren(entry);
+            shape.relations.children.forEach(function(shapeIndex){
+                var childShape = SeedWidgets.Instances()[seedID].GetShape(shapeIndex);
+                if (childShape instanceof ShapeNode) {
+                    pickAllChildren(childShape);
                 }
             });
         }
