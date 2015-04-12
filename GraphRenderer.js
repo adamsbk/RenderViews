@@ -647,7 +647,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     function nodeMouseOver(d) {
         var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
         if (shape) {
-            if (shape.interaction.IsLeaf()) {
+            if (shape.relations.IsLeaf()) {
                 shape.interaction.picked(!shape.interaction.picked());
             } else {
                 pickAllChildren(shape);
