@@ -143,11 +143,11 @@ var GraphManager = (function () {
                       " + domQuery + " > svg { overflow: visible; }\n\
                       .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
-                      .node text, .node foreignObject { display: none; }\n\
-                      .node:hover text, .node:hover foreignObject { display: block; }\n\
-                      .node foreignObject body { margin: 0; padding: 0; background-color: transparent; }\n\
-                      .node foreignObject .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
-                      .node foreignObject .node-info p { padding: 0; margin: 0; line-height: 1.2em; font-size: 1em; }\n\
+                      .node text, .node .foreignObj { display: none; }\n\
+                      .node:hover text, .node:hover .foreignObj { display: block; }\n\
+                      .node .foreignObj body { margin: 0; padding: 0; background-color: transparent; }\n\
+                      .node .foreignObj .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
+                      .node .foreignObj .node-info p { padding: 0; margin: 0; line-height: 1.2em; font-size: 1em; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       </style>");
             $('html > head').append(style);
@@ -493,7 +493,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
 
         //descendantCount and leafCount attributes should be updated on existing elements too - they are updated as new shape came
         var allSwitch = node.selectAll("g switch");
-        var allForeignObject = allSwitch.select("foreignObject");
+        var allForeignObject = allSwitch.select(".foreignObj");
         allForeignObject.select('.descendantCount')
                 .text(function (d) {
                     return "Descendant count: " + d.descendatnCount;
@@ -505,6 +505,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         
         var foreignObject = switchElem.append("foreignObject")
                 .attr("requiredExtensions", "http://www.w3.org/1999/xhtml")
+                .attr("class", "foreignObj") //added class due to chrome does not create SVG foreignObject properly - it creates foreignobject and then it could not be selected with "foreignObject" selector - instead use class
                 .attr("width", 170)
                 .attr("height", "5em")
                 .style("transform", function (d) {
