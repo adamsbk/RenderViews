@@ -273,14 +273,18 @@ function ForceCollapsible(svg, width, height) {
         self.addControls();
     };
     
-    this.addTree = function(tree) {
+    this.addTree = function(tree) {   
         this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg, width, height);
+        
+        $('#seedInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
     
     this.removeTree = function(seedID) {
         if (!(seedID in self.trees)) {
             throw "There does not exist tree with property " + seedID + " in ForceCollapsible.trees object";
         }
+        $('#seedInput option[value="'+ seedID +'"]').remove();
+        
         self.trees[seedID].remove();
         delete self.trees[seedID];
     };
@@ -338,8 +342,13 @@ function ForceCollapsible(svg, width, height) {
     this.submitControls = function(event) {
         event.preventDefault();
         var level = $(this).find('#levelInput').val();
+        var seedID = $(this).find('#seedInput').val();
         if (level >=0 && Math.floor(level) == level && $.isNumeric(level)) {
-            self.collapseTrees(level);
+            if (seedID >= 0) {
+                self.collapseTrees(level, seedID);
+            } else {
+                self.collapseTrees(level);
+            }
         }
     };
     
