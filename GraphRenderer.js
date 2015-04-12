@@ -504,7 +504,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
                 });
         
         var foreignObject = switchElem.append("foreignObject")
-                .attr("requiredExtensions", "http://www.w3.org/1999/xhtml")
+                //.attr("requiredExtensions", "http://www.w3.org/1999/xhtml") //chrome not working with this attribute
                 .attr("class", "foreignObj") //added class due to chrome does not create SVG foreignObject properly - it creates foreignobject and then it could not be selected with "foreignObject" selector - instead use class
                 .attr("width", 170)
                 .attr("height", "5em")
