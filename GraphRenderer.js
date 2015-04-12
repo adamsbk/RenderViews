@@ -282,14 +282,14 @@ function ForceCollapsible(svg) {
     this.addTree = function(tree) {   
         this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg);
         
-        $('#seedInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
+        $('#seedInput, #showSeedsInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
     
     this.removeTree = function(seedID) {
         if (!(seedID in self.trees)) {
             throw "There does not exist tree with property " + seedID + " in ForceCollapsible.trees object";
         }
-        $('#seedInput option[value="'+ seedID +'"]').remove();
+        $('#seedInput, #showSeedsInput').children('option[value="'+ seedID +'"]').remove();
         
         self.trees[seedID].remove();
         delete self.trees[seedID];
@@ -343,6 +343,17 @@ function ForceCollapsible(svg) {
               <button type="submit" class="btn btn-default btn-sm">Cluster</button>\n\
             </form>\n\
         ').submit(self.submitControls));
+        
+        $('#graphControls').append($('\n\
+            <div class="form-inline form-group form-group-sm">\n\
+                <label for="showSeedsInput">Show seeds</label>\n\
+            </div>\n\
+            ').append($('\
+                <select class="form-control" id="showSeedsInput" multiple>\n\
+                    <option value="-1">all</option>\n\
+                </select>\n\
+                ').change(self.showHideTrees))
+                );
     };
     
     this.submitControls = function(event) {
@@ -356,6 +367,28 @@ function ForceCollapsible(svg) {
                 self.collapseTrees(level);
             }
         }
+    };
+    
+    //show trees based on <select id=showSeedsInput>
+    this.showHideTrees = function() {
+        //this reference refers to html <select> object
+        var seedIDs = $(this).val();
+        if (seedIDs) {
+            if (-1 in seedIDs) {
+                self.showAllTrees();
+                return;
+            }
+            var seedGroups = svg.selectAll('svg > g[seedID]');
+            seedGroups.each(function(d,i) {
+                var currentGroup = d3.select(this);
+                currentGroup.classed("hide", !(currentGroup.attr('seedID') in seedIDs));
+            });
+        }
+    };
+    
+    this.showAllTrees = function() {
+        svg.selectAll('svg > g.hide[seedID]')
+                .classed("hide", false);
     };
     
     this.interactionChanged = function(seedID, shapeID, newVal) {
@@ -698,8 +731,8 @@ function ForceCollapsibleTree(tree, svg) {
             height = svg.attr('height');
             
             force.size([width, height]).resume();
-            root.x = root.positionRatio.left * width;
-            root.y = root.positionRatio.top * height;
+            /*root.x = root.positionRatio.left * width;
+            root.y = root.positionRatio.top * height;*/
         });
     }
     
