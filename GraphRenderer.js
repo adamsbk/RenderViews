@@ -647,11 +647,7 @@ function ForceCollapsibleTree(tree, svg, width, height) {
     function nodeMouseOver(d) {
         var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
         if (shape) {
-            if (shape.relations.IsLeaf()) {
-                shape.interaction.picked(!shape.interaction.picked());
-            } else {
-                pickAllChildren(shape);
-            }
+            pickAllChildren(shape);
         }
     }
     
@@ -659,8 +655,8 @@ function ForceCollapsibleTree(tree, svg, width, height) {
         if (shape.relations.IsLeaf()) {
             shape.interaction.picked(!shape.interaction.picked());
         } else if (shape.relations.children) {
-            shape.relations.children.forEach(function(shapeIndex){
-                var childShape = SeedWidgets.Instances()[seedID].GetShape(shapeIndex);
+            shape.relations.children.forEach(function(shapeID){
+                var childShape = SeedWidgets.Instances()[seedID].GetShape(shapeID);
                 if (childShape instanceof ShapeNode) {
                     pickAllChildren(childShape);
                 }
