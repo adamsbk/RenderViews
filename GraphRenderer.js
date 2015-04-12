@@ -374,14 +374,14 @@ function ForceCollapsible(svg) {
         //this reference refers to html <select> object
         var seedIDs = $(this).val();
         if (seedIDs) {
-            if (-1 in seedIDs) {
+            if (seedIDs.indexOf("-1") > -1) {
                 self.showAllTrees();
                 return;
             }
             var seedGroups = svg.selectAll('svg > g[seedID]');
             seedGroups.each(function(d,i) {
                 var currentGroup = d3.select(this);
-                currentGroup.classed("hide", !(currentGroup.attr('seedID') in seedIDs));
+                currentGroup.classed("hide", seedIDs.indexOf(currentGroup.attr('seedID')) < 0);
             });
         }
     };
