@@ -23,7 +23,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
 
     self.initCalls.push(function () {
         window.console && console.log('Just loaded');
-        $(domQuery).text("Just loaded the graph renderer.");
 
         //add button to draw D3 graph
         /*$(domQuery).append(
@@ -401,6 +400,9 @@ function ForceCollapsibleTree(tree, svg, width, height) {
             throw "There is no shape with shapeID `" + shapeID + "` to change interaction.";
         }
         var nodeWithShapeID = node.filter(function(d) { return d.shapeId === shapeID; });
+        
+        //find first visible node (not clustered)
+        
         
         //.attr('name', null) removes attribute `name` from element
         nodeWithShapeID.attr("picked", newVal ? "yes" : null);
