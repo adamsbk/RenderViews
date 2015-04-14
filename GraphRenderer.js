@@ -426,7 +426,7 @@ function ForceCollapsibleTree(tree, svg) {
                 })
                 .linkDistance(function (d) {
                     var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
-                    var nodesDistance = d.target._children ? 60 : d.target.children ? 25 : 15;
+                    var nodesDistance = d.target._children ? 30 : d.target.children ? 15 : 10;
                     return nodesRadius + nodesDistance;
                 })
                 .on("tick", tick);
