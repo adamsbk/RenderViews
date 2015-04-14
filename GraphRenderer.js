@@ -421,9 +421,9 @@ function ForceCollapsibleTree(tree, svg) {
         force = d3.layout.force()
                 .size([width, height])
                 //.gravity(.01)
-                /*.charge(function (d) {
+                .charge(function (d) {
                     return d._children ? -d.leafCount * 15 : -30;
-                })*/
+                })
                 .linkDistance(function (d) {
                     var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
                     var nodesDistance = d.target._children ? 60 : d.target.children ? 25 : 15;
