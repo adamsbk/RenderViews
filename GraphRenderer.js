@@ -305,7 +305,7 @@ function ForceCollapsible(svg) {
 
     this.updateBySeedID = function (seedID) {
         if (seedID in self.trees) {
-            self.trees[seedID].update();
+            self.trees[seedID].updateWithDelay();
         } else {
             throw "Tree with seedID `" + seedID + "` was not initialised.";
         }
@@ -482,6 +482,18 @@ function ForceCollapsibleTree(tree, svg) {
 
         recurse(root);
         self.update();
+    };
+
+    /**
+     * Updates with delay. Then called more times it executes only last delay
+     * Optimization for adding nodes in the start/restart of app
+     * 
+     * @returns {undefined}
+     */
+    this.timeoutId = 0;
+    this.updateWithDelay = function() {
+        clearTimeout(self.timeoutId);
+        self.timeoutId = setTimeout(self.update, 400);
     };
 
     this.update = function () {
