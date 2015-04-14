@@ -420,7 +420,7 @@ function ForceCollapsibleTree(tree, svg) {
     this.init = function() {
         force = d3.layout.force()
                 .size([width, height])
-                .gravity(.01)
+                //.gravity(.01)
                 .charge(function (d) {
                     return d._children ? -d.leafCount * 15 : -30;
                 })
@@ -623,6 +623,32 @@ function ForceCollapsibleTree(tree, svg) {
     };
 
     function tick() {
+
+        //node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+        //.attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+        /*node.attr("transform", function (d) {
+            var radius = nodeRadius(d);
+            var cx = Math.max(radius, Math.min(width - radius, d.x));
+            var cy = Math.max(radius, Math.min(height - radius, d.y));
+            return "translate(" + cx + "," + cy + ")";
+        });*/
+        node.selectAll("circle").attr("cx", function (d) {
+            var radius = nodeRadius(d);
+            return Math.max(radius, Math.min(width - radius, d.x));
+        })
+                .attr("cy", function (d) {
+                    var radius = nodeRadius(d);
+                    return Math.max(radius, Math.min(height - radius, d.y));
+                });
+        node.selectAll(".foreignObj").attr("x", function (d) {
+            var radius = nodeRadius(d);
+            return Math.max(radius, Math.min(width - radius, d.x));
+        })
+                .attr("y", function (d) {
+                    var radius = nodeRadius(d);
+                    return Math.max(radius, Math.min(height - radius, d.y));
+                });
+        
         link.attr("x1", function (d) {
             return d.source.x;
         })
@@ -635,15 +661,6 @@ function ForceCollapsibleTree(tree, svg) {
                 .attr("y2", function (d) {
                     return d.target.y;
                 });
-
-        //node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
-        //.attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
-        node.attr("transform", function (d) {
-            var radius = nodeRadius(d);
-            var cx = Math.max(radius, Math.min(width - radius, d.x));
-            var cy = Math.max(radius, Math.min(height - radius, d.y));
-            return "translate(" + cx + "," + cy + ")";
-        });
     }
 
     // Color leaf nodes orange, and packages white or blue.
