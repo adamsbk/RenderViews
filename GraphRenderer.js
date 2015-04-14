@@ -421,9 +421,9 @@ function ForceCollapsibleTree(tree, svg) {
         force = d3.layout.force()
                 .size([width, height])
                 //.gravity(.01)
-                .charge(function (d) {
+                /*.charge(function (d) {
                     return d._children ? -d.leafCount * 15 : -30;
-                })
+                })*/
                 .linkDistance(function (d) {
                     var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
                     var nodesDistance = d.target._children ? 60 : d.target.children ? 25 : 15;
@@ -634,11 +634,11 @@ function ForceCollapsibleTree(tree, svg) {
         });*/
         node.selectAll("circle").attr("cx", function (d) {
             var radius = nodeRadius(d);
-            return Math.max(radius, Math.min(width - radius, d.x));
+            return d.x = Math.max(radius, Math.min(width - radius, d.x));
         })
                 .attr("cy", function (d) {
                     var radius = nodeRadius(d);
-                    return Math.max(radius, Math.min(height - radius, d.y));
+                    return d.y = Math.max(radius, Math.min(height - radius, d.y));
                 });
         node.selectAll(".foreignObj").attr("x", function (d) {
             var radius = nodeRadius(d);
@@ -670,7 +670,7 @@ function ForceCollapsibleTree(tree, svg) {
 
     // Compute radius for node - used more than 3 - placed in separated function
     function nodeRadius(d) {
-        return d.children ? 6 : d._children ? Math.sqrt(d.descendatnCount) * 6 : 8;
+        return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
     }
 
     // Toggle children.
