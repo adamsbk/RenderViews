@@ -211,7 +211,21 @@ var GraphManager = (function () {
                         //do not overwrite seedObject[parent] to seedObject.parent because `parent` is numeric
                         seedObject[parent]['children'] = [];
                     }
-                    seedObject[parent].children.push(newNode);
+                    
+                    //push item into children or clustered _children
+                    if ('children' in seedObject[parent]) {
+                        seedObject[parent].children.push(newNode);
+                    } else if ('_children' in seedObject[parent]) {
+                        seedObject[parent]._children.push(newNode);
+                    }
+                    
+                    //start clustering at certain level
+                    if (seedObject[parent].level >= forceCollaps.CLUSTER_MIN_LEVEL) {
+                        if (('children' in seedObject[parent]) && (seedObject[parent].level == forceCollaps.CLUSTER_MIN_LEVEL || seedObject[parent].children.length > 1 )) {
+                            seedObject[parent]._children = seedObject[parent].children;
+                            seedObject[parent].children = null;
+                        }
+                    }
                 }
                 
                 currentGraph.updateBySeedID(seed);
@@ -268,6 +282,8 @@ var GraphManager = (function () {
 function ForceCollapsible(svg) {
     
     var self = this;
+    
+    this.CLUSTER_MIN_LEVEL = 6;
     
     //parameters
     //this.treeNodes = treeNodes;
