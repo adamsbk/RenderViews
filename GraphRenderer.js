@@ -438,7 +438,7 @@ function ForceCollapsibleTree(tree, svg) {
                 .size([width, height])
                 //.gravity(.01)
                 .charge(function (d) {
-                    return d._children ? -d.leafCount - 30 : -30;
+                    return d._children ? -Math.sqrt(d.descendatnCount) - 30 : -30;
                 })
                 .linkDistance(function (d) {
                     var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
