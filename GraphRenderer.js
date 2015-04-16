@@ -213,7 +213,7 @@ var GraphManager = (function () {
                     }
                     
                     //push item into children or clustered _children
-                    if ('children' in seedObject[parent]) {
+                    if (seedObject[parent].children) {
                         seedObject[parent].children.push(newNode);
                     } else if ('_children' in seedObject[parent]) {
                         seedObject[parent]._children.push(newNode);
