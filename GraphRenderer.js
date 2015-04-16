@@ -451,7 +451,7 @@ function ForceCollapsibleTree(tree, svg) {
         link = SVGGroup.selectAll(".link");
         node = SVGGroup.selectAll(".node");
         
-        root.fixed = true;
+        //root.fixed = true;
         //20% margin ... w*0.2+Math.random()*w*0.6
         root.x = width * .2 + Math.random() * width * .6;
         root.y = height * .2 + Math.random() * height * .6;
@@ -698,7 +698,7 @@ function ForceCollapsibleTree(tree, svg) {
 
     // Compute radius for node - used more than 3 - placed in separated function
     function nodeRadius(d) {
-        return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) * 4.5 : 6;
+        return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) + 6 : 6;
     }
 
     // Toggle children.
