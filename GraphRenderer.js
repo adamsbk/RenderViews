@@ -444,7 +444,8 @@ function ForceCollapsibleTree(tree, svg, focus) {
                     return d._children ? -Math.sqrt(d.descendatnCount) -8 : -10;
                 })
                 .chargeDistance(function(d) {
-                    return nodeRadius(d) * 5;
+                    console.log('r: ' + nodeRadius(d));
+                    return nodeRadius(d) * 30;
                 })
                 .linkDistance(function (d) {
                     var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
