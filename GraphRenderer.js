@@ -699,14 +699,14 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 });
     }
 
-    // Color leaf nodes orange, and packages white or blue.
+    // Color leaf nodes dark yellow, root brown, nodes light blue, collapsed nodes dark blue
     function color(d) {
-        return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+        return d.index === root.index ? "#7E3817" : d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
     }
 
     // Compute radius for node - used more than 3 - placed in separated function
     function nodeRadius(d) {
-        return d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) + 6 : 6;
+        return d.index === root.index ? 12 : d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) + 6 : 6;
     }
 
     // Toggle children.
