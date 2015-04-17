@@ -441,14 +441,14 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .size([width, height])
                 .gravity(0)
                 .charge(function (d) {
-                    return d._children ? 2*(-Math.sqrt(d.descendatnCount) -30) : -30;
+                    return d._children ? -Math.sqrt(d.descendatnCount) -15 : -15;
                 })
                 .linkDistance(function (d) {
                     var nodesRadius = nodeRadius(d.target) + nodeRadius(d.source);
                     var nodesDistance = d.target._children ? 30 : d.target.children ? 15 : 10;
                     return nodesRadius + nodesDistance;
                 })
-                .linkStrength(.5)
+                .linkStrength(1)
                 .on("tick", tick);
         
         var SVGGroup = svg.append("g").attr("seedID", seedID);
