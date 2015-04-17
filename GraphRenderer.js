@@ -491,7 +491,9 @@ function ForceCollapsibleTree(tree, svg, focus) {
         //if there wont be any node.id `id` parameter it should be added before hiding nodes (like previous flatten(root)) which added `id`s to all node
         
         function recurse(node) {
-            if (node.children)
+            //hide also descendants of node._children when user collapsed it (descendants may not be collapsed)
+            var nodeChildren = node.children ? node.children : node._children ? node._children : false;
+            if (nodeChildren)
                 node.children.forEach(recurse);
 
             if (node.level >= level) {
