@@ -51,7 +51,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     //when clicked "go" button it removes all shapes of seed in the same order they were been added
     self.removeCalls.push(function (shape) {
         console.log('Seed removed...');
-        console.log(shape);
+        //console.log(shape);
         
         //remove picking subscription
         var id = shape.id;
@@ -66,7 +66,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
     });
     
     self.addCalls.push(function (shape) {
-        console.log(shape);
+        //console.log(shape);
         //picking subscriptions are added and removed in graphManager
         self.graphManager.addShape(shape);
         
@@ -139,7 +139,7 @@ var GraphManager = (function () {
         function addStyles() {
             var style = $("<style>\n\
                       " + domQuery + " > svg { overflow: visible; width: 100%; height: 100%; }\n\
-                      .node circle { cursor: pointer; stroke: #3182bd; stroke-width: 1.5px; }\n\
+                      .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
                       .node:hover text, .node:hover .foreignObj { display: block; }\n\
@@ -187,7 +187,7 @@ var GraphManager = (function () {
                     "leafCount": shape.relations.IsLeaf() ? 1 : 0
                 };
 
-                console.log(shape.id + ' : ' + newNode.id);
+                //console.log(shape.id + ' : ' + newNode.id);
 
                 seedObject[shape.id] = newNode;
                 if (isRoot) {
@@ -288,16 +288,15 @@ function ForceCollapsible(svg) {
     //parameters
     //this.treeNodes = treeNodes;
     this.trees = new Object();
-    
-    this.viewModel = null;
+    this.count = 0;
         
     this.init = function() {
         self.addControls();
     };
     
     this.addTree = function(tree) {   
-        this.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg);
-        
+        self.count++;
+        self.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg);
         $('#seedInput, #showSeedsInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
     
@@ -309,6 +308,7 @@ function ForceCollapsible(svg) {
         
         self.trees[seedID].remove();
         delete self.trees[seedID];
+        self.count--;
     };
     
     this.updateEachTree = function() {
@@ -417,7 +417,7 @@ function ForceCollapsible(svg) {
     self.init();
 }
 
-function ForceCollapsibleTree(tree, svg) {
+function ForceCollapsibleTree(tree, svg, focus) {
     
     var self = this;
     
@@ -433,10 +433,13 @@ function ForceCollapsibleTree(tree, svg) {
     var width = svg.attr('width');
     var height = svg.attr('height');
     
+    //focus for each tree - not all trees in the middle
+    //this.focus = focus || {x:width/2, y:height/2};
+    
     this.init = function() {
         force = d3.layout.force()
                 .size([width, height])
-                //.gravity(.01)
+                .gravity(0)
                 .charge(function (d) {
                     return d._children ? 2*(-Math.sqrt(d.descendatnCount) -30) : -30;
                 })
@@ -453,8 +456,8 @@ function ForceCollapsibleTree(tree, svg) {
         
         //root.fixed = true;
         //20% margin ... w*0.2+Math.random()*w*0.6
-        root.x = width * .2 + Math.random() * width * .6;
-        root.y = height * .2 + Math.random() * height * .6;
+        //root.x = width * .2 + Math.random() * width * .6;
+        //root.y = height * .2 + Math.random() * height * .6;
         
         //set ratio root.x:width and root.y:height to reset root in svg resize
         root.positionRatio = {
@@ -647,7 +650,8 @@ function ForceCollapsibleTree(tree, svg) {
         node.select("circle")
                 .transition()
                 .attr("r", nodeRadius)
-                .style("fill", color);
+                .style("fill", color)
+                .style("stroke", function(d) { return d3.rgb(color(d)).darker(2); });
     };
 
     function tick() {
