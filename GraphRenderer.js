@@ -127,7 +127,7 @@ var GraphManager = (function () {
             $(domQuery).append('<div id="graphControls"></div>');
 
             var width = $(domQuery).width();
-            var height = $(domQuery).height();
+            var height = $(domQuery).height() - $(domQuery + ' #graphControls').height();
             
             svg = d3.select(domQuery).append("svg")
                 .attr("width", width)
@@ -155,7 +155,7 @@ var GraphManager = (function () {
             $(window).resize(function () {
                 $(domQuery + " > svg")
                         .attr("width", $(domQuery).width())
-                        .attr("height", $(domQuery).height());
+                        .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
             });
         }
         
@@ -448,6 +448,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                     var nodesDistance = d.target._children ? 30 : d.target.children ? 15 : 10;
                     return nodesRadius + nodesDistance;
                 })
+                .linkStrength(.5)
                 .on("tick", tick);
         
         var SVGGroup = svg.append("g").attr("seedID", seedID);
