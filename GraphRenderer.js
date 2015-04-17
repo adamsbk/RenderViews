@@ -494,7 +494,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
             //hide also descendants of node._children when user collapsed it (descendants may not be collapsed)
             var nodeChildren = node.children ? node.children : node._children ? node._children : false;
             if (nodeChildren)
-                node.children.forEach(recurse);
+                nodeChildren.forEach(recurse);
 
             if (node.level >= level) {
                 if (node.children && (node.children.length > 1 || node.level == level)) {
