@@ -701,12 +701,12 @@ function ForceCollapsibleTree(tree, svg, focus) {
 
     // Color leaf nodes dark yellow, root brown, nodes light blue, collapsed nodes dark blue
     function color(d) {
-        return d.index === root.index ? "#7E3817" : d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+        return d._children ? "#3182bd" : d.index === root.index ? "#7E3817" : d.children ? "#c6dbef" : "#fd8d3c";
     }
 
     // Compute radius for node - used more than 3 - placed in separated function
     function nodeRadius(d) {
-        return d.index === root.index ? 12 : d.children ? 4.5 : d._children ? Math.sqrt(d.descendatnCount) + 6 : 6;
+        return d._children ? Math.sqrt(d.descendatnCount) + 6 : d.index === root.index ? 12 : d.children ? 4.5 : 6;
     }
 
     // Toggle children.
