@@ -448,7 +448,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                     var nodesDistance = d.target._children ? 30 : d.target.children ? 15 : 10;
                     return nodesRadius + nodesDistance;
                 })
-                .linkStrength(.05)
+                .linkStrength(.95)
                 .on("tick", tick);
         
         var SVGGroup = svg.append("g").attr("seedID", seedID);
