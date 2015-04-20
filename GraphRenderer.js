@@ -221,7 +221,7 @@ var GraphManager = (function () {
                     
                     //start clustering at certain level
                     if (seedObject[parent].level >= graphs[graphTypes.ForceCollapsible].CLUSTER_MIN_LEVEL) {
-                        if (seedObject[parent].children && (seedObject[parent].level == graphs[graphTypes.ForceCollapsible].instance.CLUSTER_MIN_LEVEL || seedObject[parent].children.length > 1 )) {
+                        if (seedObject[parent].children && (seedObject[parent].level == graphs[graphTypes.ForceCollapsible].CLUSTER_MIN_LEVEL || seedObject[parent].children.length > 1 )) {
                             seedObject[parent]._children = seedObject[parent].children;
                             seedObject[parent].children = null;
                         }
