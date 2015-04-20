@@ -23,13 +23,6 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
 
     self.initCalls.push(function () {
         window.console && console.log('Just loaded');
-
-        //add button to draw D3 graph
-        /*$(domQuery).append(
-                $('<button id="drawGraph">Draw graph</button>').click(function () {
-            self.collapsibleTree();
-        })
-                );*/
         
         self.graphManager = GraphManager.getInstance(domQuery);
     });
@@ -96,9 +89,7 @@ var GraphManager = (function () {
     function init(domQuery) {
         // Singleton
         
-        // Private methods and variables        
-        
-        var privateVariable = "Im also private";
+        // Private methods and variables
         
         /**
          * structure that holds pointers to self.roots nodes
@@ -110,9 +101,22 @@ var GraphManager = (function () {
         
         addToDOM();
         
-        var circlePacking = new ZoomableCircleForest(svg);
-        var forceCollaps = new ForceCollapsibleForest(svg);
-        var currentGraph = forceCollaps;
+        var graphTypes = {
+            ForceCollapsible: 'ForceCollapsible',
+            CirclePacking: 'CirclePacking'
+        };
+                
+        var graphs = {};
+        graphs[graphTypes.ForceCollapsible] = {
+            instance: new ForceCollapsibleForest(svg),
+            element: null
+        };
+        graphs[graphTypes.CirclePacking] = {
+            instance: new ZoomableCircleForest(svg),
+            element: null
+        };
+
+        var currentGraph = graphs[graphTypes.ForceCollapsible];
         
         function addToDOM() {
             /*d3.select(domQuery).append('button')
@@ -126,15 +130,19 @@ var GraphManager = (function () {
 
             //container for graph controls (inputs for collapsing graph, ...)
             $(domQuery).append('<div id="graphControls"></div>');
-
-            var width = $(domQuery).width();
-            var height = $(domQuery).height() - $(domQuery + ' #graphControls').height();
             
-            svg = d3.select(domQuery).append("svg")
-                .attr("width", width)
-                .attr("height", height);
-        
+            graphs[graphTypes.ForceCollapsible].element = d3.select(domQuery).append("svg")
+                    .attr('class', 'graph')
+                    .attr('id', graphTypes.ForceCollapsible);
+            
+            graphs[graphTypes.CirclePacking].element = d3.select(domQuery).append("svg")
+                    .attr('class', 'graph hide')
+                    .attr('id', graphTypes.CirclePacking);
+                    
             addAutoSVGResize();
+            
+            //initially add width and height to svg
+            $(window).resize();
         }
         
         function addStyles() {
@@ -154,7 +162,7 @@ var GraphManager = (function () {
         
         function addAutoSVGResize() {
             $(window).resize(function () {
-                $(domQuery + " > svg")
+                currentGraph.element
                         .attr("width", $(domQuery).width())
                         .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
             });
@@ -195,7 +203,7 @@ var GraphManager = (function () {
                     //roots[seed] = newNode;
                     seedObject.root = newNode;
                     seedObject.seedID = seed;
-                    currentGraph.addTree(seedObject);
+                    currentGraph.instance.addTree(seedObject);
                 } else if (parent in seedObject) {
 
                     var currentPredecessor = parent;
@@ -229,7 +237,7 @@ var GraphManager = (function () {
                     }
                 }
                 
-                currentGraph.updateBySeedID(seed);
+                currentGraph.instance.updateBySeedID(seed);
             },
             removeShape: function(shape) {
                 var seed = shape.relations.seed;
@@ -244,7 +252,7 @@ var GraphManager = (function () {
                 delete treeNodes[seed][shape.id];
                 if (treeNodes[seed].root !== undefined && treeNodes[seed].root.id === shape.id) { //if this shape is parent shape
                     console.log("root reference was deleted successfuly");
-                    currentGraph.removeTree(seed);
+                    currentGraph.instance.removeTree(seed);
                     delete treeNodes[seed].root;
                     
                     //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
@@ -254,10 +262,17 @@ var GraphManager = (function () {
                 //currentGraph.updateBySeedID(seed);
             },
             interactionChanged: function(seedID, shapeID, newVal) {
-                currentGraph.interactionChanged(seedID, shapeID, newVal);
+                currentGraph.instance.interactionChanged(seedID, shapeID, newVal);
             },
             update: function() {
                 
+            },
+            viewGraph: function(graphName) {
+                if (graphs.hasOwnProperty(graphName)) {
+                    currentGraph.element.classed('hide', true);
+                    currentGraph = graphs[graphName];
+                    currentGraph.element.classed('hide', false);
+                }
             },
             // Public methods and variables
             publicMethod: function () {
@@ -316,6 +331,14 @@ function AbstractForest(svg) {
         throw new NotImplementedError();
     };
     
+    result.hide = function() {
+        svg.selectAll('svg > *').remove();
+    };
+    
+    result.show = function() {
+        throw new NotImplementedError();
+    };
+    
     result.updateEachTree = function() {
         for (var seedID in result.trees) {
             if (result.trees.hasOwnProperty(seedID)) {
@@ -349,6 +372,10 @@ function ForceCollapsibleForest(svg) {
     self.CLUSTER_MIN_LEVEL = 6;
         
     self.init = function() {
+        self.addControls();
+    };
+    
+    self.show = function() {
         self.addControls();
     };
     
