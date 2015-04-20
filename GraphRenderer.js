@@ -103,18 +103,20 @@ var GraphManager = (function () {
         };
 
         var graphs = {};
+        var forceSVG = d3.select(domQuery).append("svg")
+                    .attr('class', 'graph')
+                    .attr('id', graphTypes.ForceCollapsible);
+        var circleSVG = d3.select(domQuery).append("svg")
+                    .attr('class', 'graph hide')
+                    .attr('id', graphTypes.CirclePacking);
         
         graphs[graphTypes.ForceCollapsible] = {
-            element: d3.select(domQuery).append("svg")
-                    .attr('class', 'graph')
-                    .attr('id', graphTypes.ForceCollapsible),
-            instance: new ForceCollapsibleForest(this.element)
+            element: forceSVG,
+            instance: new ForceCollapsibleForest(forceSVG)
         };
         graphs[graphTypes.CirclePacking] = {
-            element: d3.select(domQuery).append("svg")
-                    .attr('class', 'graph hide')
-                    .attr('id', graphTypes.CirclePacking),
-            instance: new ZoomableCircleForest(this.element)
+            element: circleSVG,
+            instance: new ZoomableCircleForest(circleSVG)
         };
         
         var currentGraph = graphs[graphTypes.ForceCollapsible];
