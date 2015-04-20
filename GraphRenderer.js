@@ -322,8 +322,8 @@ function AbstractForest(svg) {
         throw new NotImplementedError();
     };
     
-    result.addControls = function() {
-    };
+    /*result.addControls = function() {
+    };*/
     
     result.hide = function() {
     };
