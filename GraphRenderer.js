@@ -153,6 +153,7 @@ var GraphManager = (function () {
         
         function addAutoSVGResize() {
             $(window).resize(function () {
+                if (!currentGraph) return;
                 currentGraph.svg
                         .attr("width", $(domQuery).width())
                         .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
