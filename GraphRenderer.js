@@ -103,19 +103,23 @@ var GraphManager = (function () {
         };
 
         var graphs = {};
-        graphs[graphTypes.ForceCollapsible] = {};
-        graphs[graphTypes.CirclePacking] = {};
+        
+        graphs[graphTypes.ForceCollapsible] = {
+            element: d3.select(domQuery).append("svg")
+                    .attr('class', 'graph')
+                    .attr('id', graphTypes.ForceCollapsible),
+            instance: new ForceCollapsibleForest(this.element)
+        };
+        graphs[graphTypes.CirclePacking] = {
+            element: d3.select(domQuery).append("svg")
+                    .attr('class', 'graph hide')
+                    .attr('id', graphTypes.CirclePacking),
+            instance: new ZoomableCircleForest(this.element)
+        };
         
         var currentGraph = graphs[graphTypes.ForceCollapsible];
         
         addToDOM();
-
-        graphs[graphTypes.ForceCollapsible] = {
-            instance: new ForceCollapsibleForest(this.element)
-        };
-        graphs[graphTypes.CirclePacking] = {
-            instance: new ZoomableCircleForest(this.element)
-        };
         
         function addToDOM() {
             /*d3.select(domQuery).append('button')
@@ -129,14 +133,6 @@ var GraphManager = (function () {
 
             //container for graph controls (inputs for collapsing graph, ...)
             $(domQuery).append('<div id="graphControls"></div>');
-            
-            graphs[graphTypes.ForceCollapsible].element = d3.select(domQuery).append("svg")
-                    .attr('class', 'graph')
-                    .attr('id', graphTypes.ForceCollapsible);
-            
-            graphs[graphTypes.CirclePacking].element = d3.select(domQuery).append("svg")
-                    .attr('class', 'graph hide')
-                    .attr('id', graphTypes.CirclePacking);
                     
             addAutoSVGResize();
             
