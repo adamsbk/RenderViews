@@ -97,23 +97,22 @@ var GraphManager = (function () {
          */
         var treeNodes = new Object();
         
-        var svg = null;
-        
-        addToDOM();
-        
         var graphTypes = {
             ForceCollapsible: 'ForceCollapsible',
             CirclePacking: 'CirclePacking'
         };
-                
+
         var graphs = {};
+        graphs[graphTypes.ForceCollapsible] = {};
+        graphs[graphTypes.CirclePacking] = {};
+        
+        addToDOM();
+
         graphs[graphTypes.ForceCollapsible] = {
-            instance: new ForceCollapsibleForest(svg),
-            element: null
+            instance: new ForceCollapsibleForest(this.element)
         };
         graphs[graphTypes.CirclePacking] = {
-            instance: new ZoomableCircleForest(svg),
-            element: null
+            instance: new ZoomableCircleForest(this.element)
         };
 
         var currentGraph = graphs[graphTypes.ForceCollapsible];
@@ -331,12 +330,14 @@ function AbstractForest(svg) {
         throw new NotImplementedError();
     };
     
+    result.addControls = function() {
+    };
+    
     result.hide = function() {
-        svg.selectAll('svg > *').remove();
     };
     
     result.show = function() {
-        throw new NotImplementedError();
+        result.addControls();
     };
     
     result.updateEachTree = function() {
@@ -372,10 +373,6 @@ function ForceCollapsibleForest(svg) {
     self.CLUSTER_MIN_LEVEL = 6;
         
     self.init = function() {
-        self.addControls();
-    };
-    
-    self.show = function() {
         self.addControls();
     };
     
