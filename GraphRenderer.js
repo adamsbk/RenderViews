@@ -102,6 +102,8 @@ var GraphManager = (function () {
             CirclePacking: 'CirclePacking'
         };
 
+        addToDOM();
+
         var graphs = {};
         var forceSVG = d3.select(domQuery).append("svg")
                     .attr('class', 'graph')
@@ -114,8 +116,6 @@ var GraphManager = (function () {
         graphs[graphTypes.CirclePacking] = new ZoomableCircleForest(circleSVG);
         
         var currentGraph = graphs[graphTypes.ForceCollapsible];
-        
-        addToDOM();
         
         function addToDOM() {
             /*d3.select(domQuery).append('button')
@@ -322,8 +322,8 @@ function AbstractForest(svg) {
         throw new NotImplementedError();
     };
     
-    /*result.addControls = function() {
-    };*/
+    result.addControls = function() {
+    };
     
     result.hide = function() {
     };
