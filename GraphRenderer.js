@@ -110,7 +110,8 @@ var GraphManager = (function () {
         
         addToDOM();
         
-        var forceCollaps = new ForceCollapsible(svg);
+        var circlePacking = new ZoomableCircleForest(svg);
+        var forceCollaps = new ForceCollapsibleForest(svg);
         var currentGraph = forceCollaps;
         
         function addToDOM() {
@@ -294,7 +295,7 @@ NotImplementedError.prototype = Error.prototype;
 
 /**
  * AbstractForest only to emphasize that this methods could be used with any
- * forest (ForceCollapsible, CirclePacking)
+ * forest (ForceCollapsibleForest, CirclePackingForest)
  * 
  * @param {type} svg
  * @returns {AbstractForest.result}
@@ -332,7 +333,7 @@ function AbstractForest(svg) {
     };
     
     result.interactionChanged = function(seedID, shapeID, newVal) {
-        if (!(seedID in self.trees)) {
+        if (!(seedID in result.trees)) {
             throw "There is not seed with seedID `" + seedID + "` to change interaction.";
         }
         result.trees[seedID].interactionChanged(shapeID, newVal);
@@ -341,7 +342,7 @@ function AbstractForest(svg) {
     return result;
 }
 
-function ForceCollapsible(svg) {
+function ForceCollapsibleForest(svg) {
     
     var self = AbstractForest(svg);
     
@@ -833,8 +834,48 @@ function ForceCollapsibleTree(tree, svg, focus) {
     this.init();
 }
 
-function ZoomableCircle(svg) {
-    this.trees = new Object();
+function ZoomableCircleForest(svg) {
+    
+    var self = AbstractForest(svg);
+            
+    self.init = function() {
+        self.addControls();
+    };
+    
+    self.addTree = function(tree) {   
+        self.count++;
+        self.trees[tree.seedID] = new ZoomableCirclePacking(tree, svg);
+        $('#treeBySeed').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
+    };
+    
+    self.removeTree = function(seedID) {
+        if (!(seedID in self.trees)) {
+            throw "There does not exist tree with property " + seedID + " in ForceCollapsible.trees object";
+        }
+        $('#treeBySeed').children('option[value="'+ seedID +'"]').remove();
+        
+        self.trees[seedID].remove();
+        delete self.trees[seedID];
+        self.count--;
+    };
+    
+    self.addControls = function() {
+        $('#graphControls').append($('\n\
+            <div class="form-inline form-group form-group-sm">\n\
+              <label for="treeBySeed">Show tree</label>\n\
+            </div>\n\
+            ').append($('\n\
+                <select class="form-control" id="treeBySeed">\n\
+                </select>\n\
+                ').change(function () {
+            alert($(this).val);
+        })));
+    };
+    
+    self.init();
+    
+    return self;
+    
 }
 
 function ZoomableCirclePacking(tree, svg) {
