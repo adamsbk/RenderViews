@@ -106,6 +106,8 @@ var GraphManager = (function () {
         graphs[graphTypes.ForceCollapsible] = {};
         graphs[graphTypes.CirclePacking] = {};
         
+        var currentGraph = graphs[graphTypes.ForceCollapsible];
+        
         addToDOM();
 
         graphs[graphTypes.ForceCollapsible] = {
@@ -114,8 +116,6 @@ var GraphManager = (function () {
         graphs[graphTypes.CirclePacking] = {
             instance: new ZoomableCircleForest(this.element)
         };
-
-        var currentGraph = graphs[graphTypes.ForceCollapsible];
         
         function addToDOM() {
             /*d3.select(domQuery).append('button')
