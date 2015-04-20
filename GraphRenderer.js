@@ -131,9 +131,6 @@ var GraphManager = (function () {
             $(domQuery).append('<div id="graphControls"></div>');
                     
             addAutoSVGResize();
-            
-            //initially add width and height to svg
-            $(window).resize();
         }
         
         function addStyles() {
@@ -153,7 +150,7 @@ var GraphManager = (function () {
         
         function addAutoSVGResize() {
             $(window).resize(function () {
-                if (!currentGraph) return;
+                if (currentGraph === undefined) return;
                 currentGraph.svg
                         .attr("width", $(domQuery).width())
                         .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
