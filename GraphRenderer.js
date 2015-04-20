@@ -1,4 +1,4 @@
-/*global d3, SeedWidgets, AbstractRenderer, ShapeNode, ko */
+/*global d3, SeedWidgets, AbstractRenderer, ShapeNode, ko, Error */
 
 function GraphRenderer(domQuery) { //for a whole window call with domQuery "<body>"
 
@@ -279,28 +279,85 @@ var GraphManager = (function () {
     };
 })();
 
+/**
+ * For abstract class to implement abstract methods.
+ * Taken from http://stackoverflow.com/questions/783818/how-do-i-create-a-custom-error-in-javascript#answer-871646
+ * 
+ * @param {type} message
+ * @returns {NotImplementedError}
+ */
+function NotImplementedError(message) {
+    this.name = "NotImplementedError";
+    this.message = (message || "");
+}
+NotImplementedError.prototype = Error.prototype;
+
+/**
+ * AbstractForest only to emphasize that this methods could be used with any
+ * forest (ForceCollapsible, CirclePacking)
+ * 
+ * @param {type} svg
+ * @returns {AbstractForest.result}
+ */
+function AbstractForest(svg) {
+    var result = {};
+    
+    result.svg = svg;
+    
+    result.trees = {};
+    result.count = 0;
+    
+    result.addTree = function(tree) {
+        throw new NotImplementedError();
+    };
+    
+    result.removeTree = function(seedID) {
+        throw new NotImplementedError();
+    };
+    
+    result.updateEachTree = function() {
+        for (var seedID in result.trees) {
+            if (result.trees.hasOwnProperty(seedID)) {
+                result.trees[seedID].update(); //update method from ForceCollapsibleTree object
+            }
+        }
+    };
+
+    result.updateBySeedID = function (seedID) {
+        if (seedID in result.trees) {
+            result.trees[seedID].updateWithDelay();
+        } else {
+            throw "Tree with seedID `" + seedID + "` was not initialised.";
+        }
+    };
+    
+    result.interactionChanged = function(seedID, shapeID, newVal) {
+        if (!(seedID in self.trees)) {
+            throw "There is not seed with seedID `" + seedID + "` to change interaction.";
+        }
+        result.trees[seedID].interactionChanged(shapeID, newVal);
+    };
+    
+    return result;
+}
+
 function ForceCollapsible(svg) {
     
-    var self = this;
+    var self = AbstractForest(svg);
     
-    this.CLUSTER_MIN_LEVEL = 6;
-    
-    //parameters
-    //this.treeNodes = treeNodes;
-    this.trees = new Object();
-    this.count = 0;
+    self.CLUSTER_MIN_LEVEL = 6;
         
-    this.init = function() {
+    self.init = function() {
         self.addControls();
     };
     
-    this.addTree = function(tree) {   
+    self.addTree = function(tree) {   
         self.count++;
         self.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg);
         $('#seedInput, #showSeedsInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
     
-    this.removeTree = function(seedID) {
+    self.removeTree = function(seedID) {
         if (!(seedID in self.trees)) {
             throw "There does not exist tree with property " + seedID + " in ForceCollapsible.trees object";
         }
@@ -311,23 +368,7 @@ function ForceCollapsible(svg) {
         self.count--;
     };
     
-    this.updateEachTree = function() {
-        for (var seedID in self.trees) {
-            if (self.trees.hasOwnProperty(seedID)) {
-                self.trees[seedID].update(); //update method from ForceCollapsibleTree object
-            }
-        }
-    };
-
-    this.updateBySeedID = function (seedID) {
-        if (seedID in self.trees) {
-            self.trees[seedID].updateWithDelay();
-        } else {
-            throw "Tree with seedID `" + seedID + "` was not initialised.";
-        }
-    };
-    
-    this.collapseTrees = function(level, seedID) {
+    self.collapseTrees = function(level, seedID) {
         if (seedID === undefined) { //if seedID is undefined collapse each tree
             for (var seedID in self.trees) {
                 if (self.trees.hasOwnProperty(seedID)) {
@@ -343,7 +384,7 @@ function ForceCollapsible(svg) {
         }
     };
     
-    this.addControls = function() {
+    self.addControls = function() {
         $('#graphControls').append($('\n\
             <form class="form-inline" id="forceCollapsibleControls">\n\
               <div class="form-group form-group-sm">\n\
@@ -372,7 +413,7 @@ function ForceCollapsible(svg) {
                 );
     };
     
-    this.submitControls = function(event) {
+    self.submitControls = function(event) {
         event.preventDefault();
         var level = $(this).find('#levelInput').val();
         var seedID = $(this).find('#seedInput').val();
@@ -386,7 +427,7 @@ function ForceCollapsible(svg) {
     };
     
     //show trees based on <select id=showSeedsInput>
-    this.showHideTrees = function() {
+    self.showHideTrees = function() {
         //this reference refers to html <select> object
         var seedIDs = $(this).val();
         if (seedIDs) {
@@ -402,19 +443,14 @@ function ForceCollapsible(svg) {
         }
     };
     
-    this.showAllTrees = function() {
+    self.showAllTrees = function() {
         svg.selectAll('svg > g.hide[seedID]')
                 .classed("hide", false);
     };
     
-    this.interactionChanged = function(seedID, shapeID, newVal) {
-        if (!(seedID in self.trees)) {
-            throw "There is not seed with seedID `" + seedID + "` to change interaction.";
-        }
-        self.trees[seedID].interactionChanged(shapeID, newVal);
-    };
-    
     self.init();
+    
+    return self;
 }
 
 function ForceCollapsibleTree(tree, svg, focus) {
@@ -579,6 +615,11 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .on("click", click)
                 .on("mouseenter", nodeMouseOver)
                 .on("mouseleave", nodeMouseOver);
+        
+        //for root only
+        //nodeEnter.append("text")
+        //        .attr("dx", -20)
+        //        .text("Seed " + seedID);
 
         //add texts to nodes - try <foreignobject> and then <text> with tspan
         //dx and x not worked when tspan x is set
@@ -790,4 +831,117 @@ function ForceCollapsibleTree(tree, svg, focus) {
     }
     
     this.init();
+}
+
+function ZoomableCircle(svg) {
+    this.trees = new Object();
+}
+
+function ZoomableCirclePacking(tree, svg) {
+    
+    var self = this;
+    
+    var color = null;
+    var pack = null;
+    var focus = tree.root;
+    var nodes = null;
+    var node = null;
+    var circle = null;
+    var text = null;
+    var view = null;
+    var SVGGroup = null;
+    
+    var width = svg.attr('width');
+    var height = svg.attr('height');
+
+    this.init = function() {
+        color = d3.scale.linear()
+                .domain([-1, 5])
+                .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+                .interpolate(d3.interpolateHcl);
+        
+        pack = d3.layout.pack()
+                .padding(2)
+                .size([width, height])
+                .value(function(d) { return d.descendatnCount; });
+        
+        SVGGroup = svg.append('g')
+                .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
+        
+        SVGGroup.style("background", color(-1))
+                .on("click", function () {
+                    zoom(tree.root);
+                });
+                
+        zoomTo([tree.root.x, tree.root.y, tree.root.r*2]);
+    };
+    
+    this.update = function() {
+        nodes = pack.nodes(tree.root);
+        
+        circle = SVGGroup.selectAll('circle')
+                .data(nodes)
+                .enter().append('circle')
+                .attr('class', function(d) { return 'node'; })
+                .style('fill', function(d) { return d.children ? '#00FFFF' : null; })
+                .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+        
+        text = SVGGroup.selectAll('text')
+                .data(nodes)
+                .enter().append('text')
+                .attr('class', 'label')
+                .style('fill-opacity', function (d) {
+                    return d.parent === tree.root ? 1 : 0;
+                })
+                .style('display', function (d) {
+                    return d.parent === tree.root ? null : 'none';
+                })
+                .text(function (d) {
+                    return 'Desc cnt: ' + d.descendantCount;
+                });
+        
+        node = SVGGroup.selectAll('circle,text');
+        
+    };
+    
+    function zoom(d) {
+        var focus0 = focus;
+        focus = d;
+
+        var transition = d3.transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .tween("zoom", function (d) {
+                    var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
+                    return function (t) {
+                        zoomTo(i(t));
+                    };
+                });
+
+        transition.selectAll("text")
+                .filter(function (d) {
+                    return d.parent === focus || this.style.display === "inline";
+                })
+                .style("fill-opacity", function (d) {
+                    return d.parent === focus ? 1 : 0;
+                })
+                .each("start", function (d) {
+                    if (d.parent === focus)
+                        this.style.display = "inline";
+                })
+                .each("end", function (d) {
+                    if (d.parent !== focus)
+                        this.style.display = "none";
+                });
+    }
+
+    function zoomTo(v) {
+        var k = width / v[2];
+        view = v;
+        node.attr("transform", function (d) {
+            return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+        });
+        circle.attr("r", function (d) {
+            return d.r * k;
+        });
+    }
 }
