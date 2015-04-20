@@ -110,14 +110,8 @@ var GraphManager = (function () {
                     .attr('class', 'graph hide')
                     .attr('id', graphTypes.CirclePacking);
         
-        graphs[graphTypes.ForceCollapsible] = {
-            element: forceSVG,
-            instance: new ForceCollapsibleForest(forceSVG)
-        };
-        graphs[graphTypes.CirclePacking] = {
-            element: circleSVG,
-            instance: new ZoomableCircleForest(circleSVG)
-        };
+        graphs[graphTypes.ForceCollapsible] = new ForceCollapsibleForest(forceSVG);
+        graphs[graphTypes.CirclePacking] = new ZoomableCircleForest(circleSVG);
         
         var currentGraph = graphs[graphTypes.ForceCollapsible];
         
@@ -159,7 +153,7 @@ var GraphManager = (function () {
         
         function addAutoSVGResize() {
             $(window).resize(function () {
-                currentGraph.element
+                currentGraph.svg
                         .attr("width", $(domQuery).width())
                         .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
             });
@@ -200,7 +194,7 @@ var GraphManager = (function () {
                     //roots[seed] = newNode;
                     seedObject.root = newNode;
                     seedObject.seedID = seed;
-                    currentGraph.instance.addTree(seedObject);
+                    currentGraph.addTree(seedObject);
                 } else if (parent in seedObject) {
 
                     var currentPredecessor = parent;
@@ -227,14 +221,14 @@ var GraphManager = (function () {
                     
                     //start clustering at certain level
                     if (seedObject[parent].level >= graphs[graphTypes.ForceCollapsible].CLUSTER_MIN_LEVEL) {
-                        if (seedObject[parent].children && (seedObject[parent].level == graphs[graphTypes.ForceCollapsible].CLUSTER_MIN_LEVEL || seedObject[parent].children.length > 1 )) {
+                        if (seedObject[parent].children && (seedObject[parent].level == graphs[graphTypes.ForceCollapsible].instance.CLUSTER_MIN_LEVEL || seedObject[parent].children.length > 1 )) {
                             seedObject[parent]._children = seedObject[parent].children;
                             seedObject[parent].children = null;
                         }
                     }
                 }
                 
-                currentGraph.instance.updateBySeedID(seed);
+                currentGraph.updateBySeedID(seed);
             },
             removeShape: function(shape) {
                 var seed = shape.relations.seed;
@@ -249,7 +243,7 @@ var GraphManager = (function () {
                 delete treeNodes[seed][shape.id];
                 if (treeNodes[seed].root !== undefined && treeNodes[seed].root.id === shape.id) { //if this shape is parent shape
                     console.log("root reference was deleted successfuly");
-                    currentGraph.instance.removeTree(seed);
+                    currentGraph.removeTree(seed);
                     delete treeNodes[seed].root;
                     
                     //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
@@ -259,16 +253,16 @@ var GraphManager = (function () {
                 //currentGraph.updateBySeedID(seed);
             },
             interactionChanged: function(seedID, shapeID, newVal) {
-                currentGraph.instance.interactionChanged(seedID, shapeID, newVal);
+                currentGraph.interactionChanged(seedID, shapeID, newVal);
             },
             update: function() {
                 
             },
             viewGraph: function(graphName) {
                 if (graphs.hasOwnProperty(graphName)) {
-                    currentGraph.element.classed('hide', true);
+                    currentGraph.svg.classed('hide', true);
                     currentGraph = graphs[graphName];
-                    currentGraph.element.classed('hide', false);
+                    currentGraph.svg.classed('hide', false);
                 }
             },
             // Public methods and variables
