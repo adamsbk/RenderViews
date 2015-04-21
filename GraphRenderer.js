@@ -136,8 +136,8 @@ var GraphManager = (function () {
         
         function addStyles() {
             var style = $("<style>\n\
-                      " + domQuery + " graph { width: 100%; height: 100%; }\n\
-                      " + domQuery + " graph svg { overflow: visible; width: 100%; height: 100%; }\n\
+                      " + domQuery + " .graph { width: 100%; height: 100%; }\n\
+                      " + domQuery + " .graph svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
