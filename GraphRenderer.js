@@ -373,10 +373,10 @@ function AbstractForest(elem) {
     //self invoking function - call only once to provide auto svg resize
     (function() {
         $(window).resize(function () {
-            var boundingRect = result.elem.getBoundingClientRect();
+            var boundingRect = result.elem.node().getBoundingClientRect();
             result.svg
                     .attr("width", boundingRect.width)
-                    .attr("height", boundingRect.height - result.controlsgetBoundingClientRect().height);
+                    .attr("height", boundingRect.height - result.controls.node().getBoundingClientRect().height);
         });
         //trigger resize to set initial width and height
         $(window).resize();
@@ -903,7 +903,7 @@ function ZoomableCircleForest(elem) {
     };
     
     self.addControls = function() {
-        //self.controls is created by d3 so self.controls[0] returns selector
+        //self.controls is created by d3 so self.controls[0] returns element for jquery
         $(self.controls[0]).append($('\n\
             <div class="form-inline form-group form-group-sm">\n\
               <label for="treeBySeed">Show tree</label>\n\
