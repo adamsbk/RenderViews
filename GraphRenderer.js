@@ -25,6 +25,7 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         window.console && console.log('Just loaded');
         
         self.graphManager = GraphManager.getInstance(domQuery);
+        self.graphManager.viewGraph(self.graphManager.graphTypes.ForceCollapsible);
     });
 
     self.showInPopup = function () {
@@ -160,12 +161,13 @@ var GraphManager = (function () {
         function withEachGraph(callback) {
             for (var graph in graphs) {
                 if (graphs.hasOwnProperty(graph)) {
-                    callback(graph);
+                    callback(graphs[graph]);
                 }
             }
         }
 
         return {
+            graphTypes: graphTypes,
             addShape: function(shape) {
                 var isRoot = false;
                 var seed = shape.relations.seed;
@@ -265,9 +267,11 @@ var GraphManager = (function () {
             },
             viewGraph: function(graphName) {
                 if (graphs.hasOwnProperty(graphName)) {
-                    currentGraph.svg.classed('hide', true);
+                    //currentGraph.svg.classed('hide', true);
+                    currentGraph.hide();
                     currentGraph = graphs[graphName];
-                    currentGraph.svg.classed('hide', false);
+                    currentGraph.show();
+                    //currentGraph.svg.classed('hide', false);
                 }
             },
             // Public methods and variables
@@ -331,9 +335,12 @@ function AbstractForest(svg) {
     };
     
     result.hide = function() {
+        result.svg.classed('hide', true);
+        $('#graphControls').empty();
     };
     
     result.show = function() {
+        result.svg.classed('hide', false);
         result.addControls();
     };
     
