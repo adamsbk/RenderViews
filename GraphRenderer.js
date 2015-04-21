@@ -136,7 +136,8 @@ var GraphManager = (function () {
         
         function addStyles() {
             var style = $("<style>\n\
-                      " + domQuery + " > svg { overflow: visible; width: 100%; height: 100%; }\n\
+                      " + domQuery + " graph { width: 100%; height: 100%; }\n\
+                      " + domQuery + " graph svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
@@ -326,7 +327,7 @@ function AbstractForest(elem) {
     
     result.trees = {};
     result.count = 0;
-    
+        
     result.addTree = function(tree) {
         throw new NotImplementedError();
     };
@@ -368,6 +369,18 @@ function AbstractForest(elem) {
         }
         result.trees[seedID].interactionChanged(shapeID, newVal);
     };
+    
+    //self invoking function - call only once to provide auto svg resize
+    (function() {
+        $(window).resize(function () {
+            var boundingRect = result.elem.getBoundingClientRect();
+            result.svg
+                    .attr("width", boundingRect.width)
+                    .attr("height", boundingRect.height - result.controlsgetBoundingClientRect().height);
+        });
+        //trigger resize to set initial width and height
+        $(window).resize();
+    })();
     
     return result;
 }
