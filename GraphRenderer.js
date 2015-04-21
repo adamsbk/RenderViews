@@ -445,7 +445,7 @@ function ForceCollapsibleForest(elem) {
             </form>\n\
         ').submit(self.submitControls));
         
-        $('#graphControls').append($('\n\
+        $(self.controls[0]).append($('\n\
             <div class="form-inline form-group form-group-sm">\n\
                 <label for="showSeedsInput">Show seeds</label>\n\
             </div>\n\
