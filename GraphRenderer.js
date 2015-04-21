@@ -106,15 +106,15 @@ var GraphManager = (function () {
         addToDOM();
 
         var graphs = {};
-        var forceSVG = d3.select(domQuery).append("svg")
+        var forceElem = d3.select(domQuery).append("div")
                     .attr('class', 'graph')
                     .attr('id', graphTypes.ForceCollapsible);
-        var circleSVG = d3.select(domQuery).append("svg")
+        var circleElem = d3.select(domQuery).append("div")
                     .attr('class', 'graph hide')
                     .attr('id', graphTypes.CirclePacking);
         
-        graphs[graphTypes.ForceCollapsible] = new ForceCollapsibleForest(forceSVG);
-        graphs[graphTypes.CirclePacking] = new ZoomableCircleForest(circleSVG);
+        graphs[graphTypes.ForceCollapsible] = new ForceCollapsibleForest(forceElem);
+        graphs[graphTypes.CirclePacking] = new ZoomableCircleForest(circleElem);
         
         var currentGraph = graphs[graphTypes.ForceCollapsible];
         
@@ -129,9 +129,9 @@ var GraphManager = (function () {
             addStyles();
 
             //container for graph controls (inputs for collapsing graph, ...)
-            $(domQuery).append('<div id="graphControls"></div>');
+            //$(domQuery).append('<div id="graphControls"></div>');
                     
-            addAutoSVGResize();
+            //addAutoSVGResize();
         }
         
         function addStyles() {
@@ -149,14 +149,14 @@ var GraphManager = (function () {
             $('html > head').append(style);
         }
         
-        function addAutoSVGResize() {
+        /*function addAutoSVGResize() {
             $(window).resize(function () {
                 if (currentGraph === undefined) return;
                 currentGraph.svg
                         .attr("width", $(domQuery).width())
                         .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
             });
-        }
+        }*/
 
         function withEachGraph(callback) {
             for (var graph in graphs) {
@@ -312,13 +312,17 @@ NotImplementedError.prototype = Error.prototype;
  * AbstractForest only to emphasize that this methods could be used with any
  * forest (ForceCollapsibleForest, CirclePackingForest)
  * 
- * @param {type} svg
+ * @param {type} elem
  * @returns {AbstractForest.result}
  */
-function AbstractForest(svg) {
+function AbstractForest(elem) {
     var result = {};
     
-    result.svg = svg;
+    result.elem = elem;
+    result.controls = elem.append('div')
+            .attr('class', 'graphControls');
+    
+    result.svg = elem.append('svg');
     
     result.trees = {};
     result.count = 0;
@@ -335,13 +339,11 @@ function AbstractForest(svg) {
     };
     
     result.hide = function() {
-        result.svg.classed('hide', true);
-        $('#graphControls').empty();
+        result.elem.classed('hide', true);
     };
     
     result.show = function() {
-        result.svg.classed('hide', false);
-        result.addControls();
+        result.elem.classed('hide', false);
     };
     
     result.updateEachTree = function() {
@@ -370,9 +372,9 @@ function AbstractForest(svg) {
     return result;
 }
 
-function ForceCollapsibleForest(svg) {
+function ForceCollapsibleForest(elem) {
     
-    var self = AbstractForest(svg);
+    var self = AbstractForest(elem);
     
     self.CLUSTER_MIN_LEVEL = 6;
         
@@ -382,7 +384,7 @@ function ForceCollapsibleForest(svg) {
     
     self.addTree = function(tree) {   
         self.count++;
-        self.trees[tree.seedID] = new ForceCollapsibleTree(tree, svg);
+        self.trees[tree.seedID] = new ForceCollapsibleTree(tree, self.svg);
         $('#seedInput, #showSeedsInput').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
     
@@ -414,7 +416,7 @@ function ForceCollapsibleForest(svg) {
     };
     
     self.addControls = function() {
-        $('#graphControls').append($('\n\
+        $(self.controls[0]).append($('\n\
             <form class="form-inline" id="forceCollapsibleControls">\n\
               <div class="form-group form-group-sm">\n\
                 <label for="levelInput">Level</label>\n\
@@ -464,7 +466,7 @@ function ForceCollapsibleForest(svg) {
                 self.showAllTrees();
                 return;
             }
-            var seedGroups = svg.selectAll('svg > g[seedID]');
+            var seedGroups = self.svg.selectAll('svg > g[seedID]');
             seedGroups.each(function(d,i) {
                 var currentGroup = d3.select(this);
                 currentGroup.classed("hide", seedIDs.indexOf(currentGroup.attr('seedID')) < 0);
@@ -473,7 +475,7 @@ function ForceCollapsibleForest(svg) {
     };
     
     self.showAllTrees = function() {
-        svg.selectAll('svg > g.hide[seedID]')
+        self.svg.selectAll('svg > g.hide[seedID]')
                 .classed("hide", false);
     };
     
@@ -862,9 +864,9 @@ function ForceCollapsibleTree(tree, svg, focus) {
     this.init();
 }
 
-function ZoomableCircleForest(svg) {
+function ZoomableCircleForest(elem) {
     
-    var self = AbstractForest(svg);
+    var self = AbstractForest(elem);
             
     self.init = function() {
         self.addControls();
@@ -872,7 +874,7 @@ function ZoomableCircleForest(svg) {
     
     self.addTree = function(tree) {   
         self.count++;
-        self.trees[tree.seedID] = new ZoomableCirclePacking(tree, svg);
+        self.trees[tree.seedID] = new ZoomableCirclePacking(tree, self.svg);
         $('#treeBySeed').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
     };
     
@@ -888,7 +890,8 @@ function ZoomableCircleForest(svg) {
     };
     
     self.addControls = function() {
-        $('#graphControls').append($('\n\
+        //self.controls is created by d3 so self.controls[0] returns selector
+        $(self.controls[0]).append($('\n\
             <div class="form-inline form-group form-group-sm">\n\
               <label for="treeBySeed">Show tree</label>\n\
             </div>\n\
@@ -896,7 +899,7 @@ function ZoomableCircleForest(svg) {
                 <select class="form-control" id="treeBySeed">\n\
                 </select>\n\
                 ').change(function () {
-            alert($(this).val);
+            alert($(this).val());
         })));
     };
     
