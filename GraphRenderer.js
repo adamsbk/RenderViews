@@ -156,9 +156,13 @@ var GraphManager = (function () {
                         .attr("height", $(domQuery).height() - $(domQuery + ' #graphControls').height());
             });
         }
-        
-        function privateMethod() {
-            console.log("I am private");
+
+        function withEachGraph(callback) {
+            for (var graph in graphs) {
+                if (graphs.hasOwnProperty(graph)) {
+                    callback(graph);
+                }
+            }
         }
 
         return {
@@ -192,7 +196,10 @@ var GraphManager = (function () {
                     //roots[seed] = newNode;
                     seedObject.root = newNode;
                     seedObject.seedID = seed;
-                    currentGraph.addTree(seedObject);
+                    withEachGraph(function(graph) {
+                        graph.addTree(seedObject);
+                    });
+                    //currentGraph.addTree(seedObject);
                 } else if (parent in seedObject) {
 
                     var currentPredecessor = parent;
