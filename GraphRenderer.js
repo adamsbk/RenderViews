@@ -348,6 +348,8 @@ function AbstractForest(elem) {
     result.show = function() {
         result.updateEachTree();
         result.elem.classed('hide', false);
+        //when element is styled "display:none" its dimensions are 0 (at least in FF) so when visible
+        $(window).resize();
     };
     
     result.updateEachTree = function() {
@@ -941,8 +943,8 @@ function ZoomableCirclePacking(tree, svg) {
     var view = null;
     var SVGGroup = null;
     
-    var width = svg.attr('width');
-    var height = svg.attr('height');
+    var width = 300;//svg.attr('width');
+    var height = 300;//svg.attr('height');
 
     this.init = function() {
         color = d3.scale.linear()
@@ -964,7 +966,7 @@ function ZoomableCirclePacking(tree, svg) {
                 });
         
         circle = SVGGroup.selectAll('circle');
-        text = SVGGroup.selectAll('text')
+        text = SVGGroup.selectAll('text');
         node = SVGGroup.selectAll('circle,text');
         
         zoomTo([tree.root.x, tree.root.y, tree.root.r*2]);
