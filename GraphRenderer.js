@@ -330,38 +330,38 @@ function AbstractForest(elem) {
             "descendantCount": node.descendantCount,
             "leafCount": node.leafCount
         };
-        var tree = isRoot ? {root: createdNode} : result.trees[seedID];
+        var tree = isRoot ? {root: createdNode, seedID: seedID} : result.trees[seedID].tree;
         tree[node.shapeId] = createdNode;
         if (isRoot) {
-            result.trees[seedID] = tree;
             result.addTree(tree);
         } else if (node.parentId in tree) {
             result.addNodeToParentChildren(createdNode, seedID);
         }
     };
     result.addNodeToParentChildren = function(node, seedID) {
-        var parentNode = result.trees[seedID][node.parentId];
+        var parentNode = result.trees[seedID].tree[node.parentId];
         if (parentNode.children === undefined) {
             parentNode.children = [];
         }
         parentNode.children.push(node);
     };
     
-    result.removeNode = function(seedID, shapeID) {
-                if (!(seedID in result.trees)) {
-                    throw "Seed of Shape you are removing is not defined.";
-                }
-                if (result.trees[seedID][shapeID] === undefined) {
-                    throw "There is not such a shape to remove";
-                }
-                //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
-                //instead delete could be assigned undefined - faster
-                delete result.trees[seedID][shapeID];
-                if (result.trees[seedID].root !== undefined && result.trees[seedID].root.id === shapeID) { //if this shape is parent shape
-                    console.log("root reference was deleted successfuly");
-                    result.removeTree(seedID);
-                    delete result.trees[seedID].root;
-                }
+    result.removeNode = function (seedID, shapeID) {
+        if (!(seedID in result.trees[seedID])) {
+            throw "Seed of Shape you are removing is not defined.";
+        }
+        var tree = result.trees[seedID].tree;
+        if (tree[shapeID] === undefined) {
+            throw "There is not such a shape to remove";
+        }
+        //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
+        //instead delete could be assigned undefined - faster
+        delete tree[shapeID];
+        if (tree.root !== undefined && tree.root.id === shapeID) { //if this shape is parent shape
+            console.log("root reference was deleted successfuly");
+            result.removeTree(seedID);
+            delete tree.root;
+        }
     };
     
     result.addTree = function(tree) {
@@ -436,7 +436,7 @@ function ForceCollapsibleForest(elem) {
     
     //@override
     self.addNodeToParentChildren = function(node, seedID) {
-        var tree = self.trees[seedID];
+        var tree = self.trees[seedID].tree;
         var parentNode = tree[node.parentId];        
         
         //push item into children or clustered _children
