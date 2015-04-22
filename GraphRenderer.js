@@ -436,10 +436,14 @@ function ForceCollapsibleForest(elem) {
     
     //@override
     self.addNodeToParentChildren = function(node, seedID) {
-        var tree = self.trees[seedID].tree;
-        var parentNode = tree[node.parentId];        
+        var parentNode = self.trees[seedID].tree[node.parentId];        
+        
+        if (parentNode.children === undefined) {
+            parentNode.children = [];
+        }
         
         //push item into children or clustered _children
+        //if (parentNode.children) - checks whether children object exists ([] is true) ... if (parentNode.children == false) tests (parentNode.children.toString) which returns "" and "" == false
         if (parentNode.children) {
             parentNode.children.push(node);
         } else if ('_children' in parentNode) {
