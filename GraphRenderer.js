@@ -200,9 +200,6 @@ var GraphManager = (function () {
                     //roots[seed] = newNode;
                     seedObject.root = newNode;
                     seedObject.seedID = seed;
-                    withEachGraph(function(graph) {
-                        graph.addTree(seedObject);
-                    });
                     //currentGraph.addTree(seedObject);
                 } else if (parent in seedObject) {
 
@@ -220,22 +217,12 @@ var GraphManager = (function () {
                         //do not overwrite seedObject[parent] to seedObject.parent because `parent` is numeric
                         seedObject[parent]['children'] = [];
                     }
-                    
-                    //push item into children or clustered _children
-                    if (seedObject[parent].children) {
-                        seedObject[parent].children.push(newNode);
-                    } else if ('_children' in seedObject[parent]) {
-                        seedObject[parent]._children.push(newNode);
-                    }
-                    
-                    //start clustering at certain level
-                    if (seedObject[parent].level >= graphs[graphTypes.ForceCollapsible].CLUSTER_MIN_LEVEL) {
-                        if (seedObject[parent].children && (seedObject[parent].level == graphs[graphTypes.ForceCollapsible].CLUSTER_MIN_LEVEL || seedObject[parent].children.length > 1 )) {
-                            seedObject[parent]._children = seedObject[parent].children;
-                            seedObject[parent].children = null;
-                        }
-                    }
+                    seedObject[parent].children.push(newNode);
                 }
+                
+                withEachGraph(function (graph) {
+                    graph.addNode(newNode, seed, isRoot);
+                });
                 
                 currentGraph.updateBySeedID(seed);
             },
@@ -247,14 +234,16 @@ var GraphManager = (function () {
                 if (treeNodes[seed][shape.id] === undefined) {
                     throw "There is not such a shape to remove";
                 }
+                
+                withEachGraph(function (graph) {
+                    graph.removeNode(seed, shape.id);
+                });
+                
                 //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
                 //instead delete could be assigned undefined - faster
                 delete treeNodes[seed][shape.id];
                 if (treeNodes[seed].root !== undefined && treeNodes[seed].root.id === shape.id) { //if this shape is parent shape
                     console.log("root reference was deleted successfuly");
-                    withEachGraph(function(graph) {
-                        graph.removeTree(seed);
-                    });
                     delete treeNodes[seed].root;
                     
                     //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
@@ -330,7 +319,51 @@ function AbstractForest(elem) {
     
     result.trees = {};
     result.count = 0;
-        
+    
+    result.addNode = function(node, seedID, isRoot) {
+        var createdNode = {
+            "id": node.id, //id to match data and DOM nodes -> node.data(nodes, function(d) { return d.id; });
+            "name": node.name,
+            "shapeId": node.shapeId,
+            "parentId": node.parentId,
+            "level": node.level,
+            "descendantCount": node.descendantCount,
+            "leafCount": node.leafCount
+        };
+        var tree = isRoot ? {root: createdNode} : result.trees[seedID];
+        tree[node.shapeId] = createdNode;
+        if (isRoot) {
+            result.trees[seedID] = tree;
+            result.addTree(tree);
+        } else if (node.parentId in tree) {
+            result.addNodeToParentChildren(createdNode, seedID);
+        }
+    };
+    result.addNodeToParentChildren = function(node, seedID) {
+        var parentNode = result.trees[seedID][node.parentId];
+        if (parentNode.children === undefined) {
+            parentNode.children = [];
+        }
+        parentNode.children.push(node);
+    };
+    
+    result.removeNode = function(seedID, shapeID) {
+                if (!(seedID in result.trees)) {
+                    throw "Seed of Shape you are removing is not defined.";
+                }
+                if (result.trees[seedID][shapeID] === undefined) {
+                    throw "There is not such a shape to remove";
+                }
+                //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
+                //instead delete could be assigned undefined - faster
+                delete result.trees[seedID][shapeID];
+                if (result.trees[seedID].root !== undefined && result.trees[seedID].root.id === shapeID) { //if this shape is parent shape
+                    console.log("root reference was deleted successfuly");
+                    result.removeTree(seedID);
+                    delete result.trees[seedID].root;
+                }
+    };
+    
     result.addTree = function(tree) {
         throw new NotImplementedError();
     };
@@ -399,6 +432,27 @@ function ForceCollapsibleForest(elem) {
         
     self.init = function() {
         self.addControls();
+    };
+    
+    //@override
+    self.addNodeToParentChildren = function(node, seedID) {
+        var tree = self.trees[seedID];
+        var parentNode = tree[node.parentId];        
+        
+        //push item into children or clustered _children
+        if (parentNode.children) {
+            parentNode.children.push(node);
+        } else if ('_children' in parentNode) {
+            parentNode._children.push(node);
+        }
+
+        //start clustering at certain level
+        if (parentNode.level >= self.CLUSTER_MIN_LEVEL) {
+            if (parentNode.children && (parentNode.level == self.CLUSTER_MIN_LEVEL || parentNode.children.length > 1)) {
+                parentNode._children = parentNode.children;
+                parentNode.children = null;
+            }
+        }
     };
     
     self.addTree = function(tree) {   
@@ -957,8 +1011,7 @@ function ZoomableCirclePacking(tree, svg) {
         pack = d3.layout.pack()
                 .padding(2)
                 .size([width, height])
-                .value(function(d) { return d.descendantCount; })
-                .children(function(d) { return d._children ? d._children : d.children; });
+                .value(function(d) { return d.descendantCount; });
         
         SVGGroup = svg.append('g')
                 .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
