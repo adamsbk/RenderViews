@@ -1038,10 +1038,10 @@ function ZoomableCirclePacking(tree, svg) {
     function zoomTo(v) {
         var k = width / v[2];
         view = v;
-        node.attr("transform", function (d) {
+        SVGGroup.selectAll('circle,text').attr("transform", function (d) {
             return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
         });
-        circle.attr("r", function (d) {
+        SVGGroup.selectAll('circle').attr("r", function (d) {
             return d.r * k;
         });
     }
