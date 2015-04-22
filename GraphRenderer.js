@@ -251,7 +251,9 @@ var GraphManager = (function () {
                 delete treeNodes[seed][shape.id];
                 if (treeNodes[seed].root !== undefined && treeNodes[seed].root.id === shape.id) { //if this shape is parent shape
                     console.log("root reference was deleted successfuly");
-                    currentGraph.removeTree(seed);
+                    withEachGraph(function(graph) {
+                        graph.removeTree(seed);
+                    });
                     delete treeNodes[seed].root;
                     
                     //seed could not be removed, because root shape is deleted firstly in the "go" button clicked
@@ -344,6 +346,7 @@ function AbstractForest(elem) {
     };
     
     result.show = function() {
+        result.updateEachTree();
         result.elem.classed('hide', false);
     };
     
@@ -505,6 +508,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
     
     //private properties
     var seedID = tree.seedID;
+    var SVGGroup = null;
     var root = tree.root;
     var link = null;
     var node = null;
@@ -532,7 +536,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .linkStrength(.95)
                 .on("tick", tick);
         
-        var SVGGroup = svg.append("g").attr("seedID", seedID);
+        SVGGroup = svg.append("g").attr("seedID", seedID);
         link = SVGGroup.selectAll(".link");
         node = SVGGroup.selectAll(".node");
         
@@ -551,7 +555,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
     };
     
     this.remove = function() {
-        svg.select('g[seedID="' + seedID + '"]').remove();
+        SVGGroup.remove();
     };
     
     this.interactionChanged = function(shapeID, newVal) {
@@ -926,6 +930,7 @@ function ZoomableCirclePacking(tree, svg) {
     
     var self = this;
     
+    var seedID = tree.seedID;
     var color = null;
     var pack = null;
     var focus = tree.root;
@@ -959,6 +964,11 @@ function ZoomableCirclePacking(tree, svg) {
                 });
                 
         zoomTo([tree.root.x, tree.root.y, tree.root.r*2]);
+    };
+    
+    this.remove = function() {
+        //SVGGroup == svg.select('g[seedID="' + seedID + '"]')
+        SVGGroup.remove();
     };
     
     this.update = function() {
