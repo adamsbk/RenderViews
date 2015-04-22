@@ -188,7 +188,7 @@ var GraphManager = (function () {
                     "shapeId": shape.id,
                     "parentId": parent,
                     "level": isRoot ? 0 : seedObject[parent].level + 1,
-                    "descendatnCount": 0,
+                    "descendantCount": 0,
                     "leafCount": shape.relations.IsLeaf() ? 1 : 0
                 };
 
@@ -208,7 +208,7 @@ var GraphManager = (function () {
                     var currentPredecessor = parent;
                     var isLeaf = shape.relations.IsLeaf();
                     while (currentPredecessor in seedObject) {
-                        seedObject[currentPredecessor]['descendatnCount']++;
+                        seedObject[currentPredecessor]['descendantCount']++;
                         if (isLeaf) {
                             seedObject[currentPredecessor]['leafCount']++;
                         }
@@ -525,7 +525,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .size([width, height])
                 .gravity(0)
                 .charge(function (d) {
-                    return d._children ? -Math.sqrt(d.descendatnCount) -30 : -30;
+                    return d._children ? -Math.sqrt(d.descendantCount) -30 : -30;
                 })
                 .chargeDistance(100)
                 .linkDistance(function (d) {
@@ -678,7 +678,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
         var allForeignObject = allSwitch.select(".foreignObj");
         allForeignObject.select('.descendantCount')
                 .text(function (d) {
-                    return "Descendant count: " + d.descendatnCount;
+                    return "Descendant count: " + d.descendantCount;
                 });
         allForeignObject.select('.leafCount')
                 .text(function (d) {
@@ -702,7 +702,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
         containerElem.append("xhtml:p")
                 .attr("class", "descendantCount")
                 .text(function (d) {
-                    return "Descendant count: " + d.descendatnCount;
+                    return "Descendant count: " + d.descendantCount;
                 });
         containerElem.append("xhtml:p")
                 .attr("class", "leafCount")
@@ -723,7 +723,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .attr("x", 0)
                 .attr("y", 0)
                 .text(function (d) {
-                    return "Descendant count: " + d.descendatnCount;
+                    return "Descendant count: " + d.descendantCount;
                 });
 
         texts.append("tspan")
@@ -795,7 +795,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
 
     // Compute radius for node - used more than 3 - placed in separated function
     function nodeRadius(d) {
-        return d._children ? Math.sqrt(d.descendatnCount) + 6 : d.index === root.index ? 12 : d.children ? 4.5 : 6;
+        return d._children ? Math.sqrt(d.descendantCount) + 6 : d.index === root.index ? 12 : d.children ? 4.5 : 6;
     }
 
     // Toggle children.
@@ -953,7 +953,7 @@ function ZoomableCirclePacking(tree, svg) {
         pack = d3.layout.pack()
                 .padding(2)
                 .size([width, height])
-                .value(function(d) { return d.descendatnCount; });
+                .value(function(d) { return d.descendantCount; });
         
         SVGGroup = svg.append('g')
                 .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
@@ -962,7 +962,11 @@ function ZoomableCirclePacking(tree, svg) {
                 .on("click", function () {
                     zoom(tree.root);
                 });
-        self.update();
+        
+        circle = SVGGroup.selectAll('circle');
+        text = SVGGroup.selectAll('text')
+        node = SVGGroup.selectAll('circle,text');
+        
         zoomTo([tree.root.x, tree.root.y, tree.root.r*2]);
     };
     
@@ -974,14 +978,14 @@ function ZoomableCirclePacking(tree, svg) {
     this.update = function() {
         nodes = pack.nodes(tree.root);
         
-        circle = SVGGroup.selectAll('circle')
+        circle
                 .data(nodes)
                 .enter().append('circle')
                 .attr('class', function(d) { return 'node'; })
                 .style('fill', function(d) { return d.children ? '#00FFFF' : null; })
                 .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
         
-        text = SVGGroup.selectAll('text')
+        text
                 .data(nodes)
                 .enter().append('text')
                 .attr('class', 'label')
@@ -994,8 +998,6 @@ function ZoomableCirclePacking(tree, svg) {
                 .text(function (d) {
                     return 'Desc cnt: ' + d.descendantCount;
                 });
-        
-        node = SVGGroup.selectAll('circle,text');
         
     };
     
