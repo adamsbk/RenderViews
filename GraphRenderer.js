@@ -1039,4 +1039,6 @@ function ZoomableCirclePacking(tree, svg) {
             return d.r * k;
         });
     }
+    
+    this.init();
 }
