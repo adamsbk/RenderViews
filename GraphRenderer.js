@@ -561,7 +561,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
     
     var self = this;
     
-    this.publicTree = tree;
+    this.tree = tree;
     
     //private properties
     var seedID = tree.seedID;
@@ -986,6 +986,8 @@ function ZoomableCircleForest(elem) {
 function ZoomableCirclePacking(tree, svg) {
     
     var self = this;
+    
+    this.tree = tree;
     
     var seedID = tree.seedID;
     var color = null;
