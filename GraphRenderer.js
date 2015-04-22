@@ -188,9 +188,11 @@ var GraphManager = (function () {
                     "name": "node " + shape.id,
                     "shapeId": shape.id,
                     "parentId": parent,
-                    "level": isRoot ? 0 : seedObject[parent].level + 1,
-                    "descendantCount": 0,
-                    "leafCount": shape.relations.IsLeaf() ? 1 : 0
+                    "info": { //added to object due to copy only reference - values (descendantCount,...) are computed later and memory save
+                        "level": isRoot ? 0 : seedObject[parent].info.level + 1,
+                        "descendantCount": 0,
+                        "leafCount": shape.relations.IsLeaf() ? 1 : 0
+                    }
                 };
 
                 //console.log(shape.id + ' : ' + newNode.id);
@@ -206,9 +208,9 @@ var GraphManager = (function () {
                     var currentPredecessor = parent;
                     var isLeaf = shape.relations.IsLeaf();
                     while (currentPredecessor in seedObject) {
-                        seedObject[currentPredecessor]['descendantCount']++;
+                        seedObject[currentPredecessor].info['descendantCount']++;
                         if (isLeaf) {
-                            seedObject[currentPredecessor]['leafCount']++;
+                            seedObject[currentPredecessor].info['leafCount']++;
                         }
                         currentPredecessor = seedObject[currentPredecessor].parentId;
                     }
@@ -326,9 +328,7 @@ function AbstractForest(elem) {
             "name": node.name,
             "shapeId": node.shapeId,
             "parentId": node.parentId,
-            "level": node.level,
-            "descendantCount": node.descendantCount,
-            "leafCount": node.leafCount
+            "info": node.info
         };
         var tree = isRoot ? {root: createdNode, seedID: seedID} : result.trees[seedID].tree;
         tree[node.shapeId] = createdNode;
@@ -348,7 +348,7 @@ function AbstractForest(elem) {
     
     result.removeNode = function (seedID, shapeID) {
         if (!(seedID in result.trees[seedID])) {
-            throw "Seed of Shape you are removing is not defined.";
+            return; //do not throw exception because removeShape begins by root - so result.trees[seedID] is deleted in the first call
         }
         var tree = result.trees[seedID].tree;
         if (tree[shapeID] === undefined) {
@@ -451,8 +451,8 @@ function ForceCollapsibleForest(elem) {
         }
 
         //start clustering at certain level
-        if (parentNode.level >= self.CLUSTER_MIN_LEVEL) {
-            if (parentNode.children && (parentNode.level == self.CLUSTER_MIN_LEVEL || parentNode.children.length > 1)) {
+        if (parentNode.info.level >= self.CLUSTER_MIN_LEVEL) {
+            if (parentNode.children && (parentNode.info.level == self.CLUSTER_MIN_LEVEL || parentNode.children.length > 1)) {
                 parentNode._children = parentNode.children;
                 parentNode.children = null;
             }
@@ -586,7 +586,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .size([width, height])
                 .gravity(0)
                 .charge(function (d) {
-                    return d._children ? -Math.sqrt(d.descendantCount) -30 : -30;
+                    return d._children ? -Math.sqrt(d.info.descendantCount) -30 : -30;
                 })
                 .chargeDistance(100)
                 .linkDistance(function (d) {
@@ -641,8 +641,8 @@ function ForceCollapsibleTree(tree, svg, focus) {
             if (nodeChildren)
                 nodeChildren.forEach(recurse);
 
-            if (node.level >= level) {
-                if (node.children && (node.children.length > 1 || node.level == level)) {
+            if (node.info.level >= level) {
+                if (node.children && (node.children.length > 1 || node.info.level == level)) {
                     toggle(node);
                 }
             }
@@ -714,7 +714,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
                     return d.shapeId;
                 })
                 .attr("data-level", function (d) {
-                    return d.level;
+                    return d.info.level;
                 })
                 .call(force.drag);
 
@@ -739,11 +739,11 @@ function ForceCollapsibleTree(tree, svg, focus) {
         var allForeignObject = allSwitch.select(".foreignObj");
         allForeignObject.select('.descendantCount')
                 .text(function (d) {
-                    return "Descendant count: " + d.descendantCount;
+                    return "Descendant count: " + d.info.descendantCount;
                 });
         allForeignObject.select('.leafCount')
                 .text(function (d) {
-                    return "Leaf count: " + d.leafCount;
+                    return "Leaf count: " + d.info.leafCount;
                 });
         
         var foreignObject = switchElem.append("foreignObject")
@@ -763,15 +763,15 @@ function ForceCollapsibleTree(tree, svg, focus) {
         containerElem.append("xhtml:p")
                 .attr("class", "descendantCount")
                 .text(function (d) {
-                    return "Descendant count: " + d.descendantCount;
+                    return "Descendant count: " + d.info.descendantCount;
                 });
         containerElem.append("xhtml:p")
                 .attr("class", "leafCount")
                 .text(function (d) {
-                    return "Leaf count: " + d.leafCount;
+                    return "Leaf count: " + d.info.leafCount;
                 });
         containerElem.append("xhtml:p").text(function (d) {
-            return "Level: " + d.level;
+            return "Level: " + d.info.level;
         });
 
         var texts = switchElem.append("text")
@@ -784,21 +784,21 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 .attr("x", 0)
                 .attr("y", 0)
                 .text(function (d) {
-                    return "Descendant count: " + d.descendantCount;
+                    return "Descendant count: " + d.info.descendantCount;
                 });
 
         texts.append("tspan")
                 .attr("x", 0)
                 .attr("y", "1em")
                 .text(function (d) {
-                    return "Leaf count: " + d.leafCount;
+                    return "Leaf count: " + d.info.leafCount;
                 });
 
         texts.append("tspan")
                 .attr("x", 0)
                 .attr("y", "2em")
                 .text(function (d) {
-                    return "Level: " + d.level;
+                    return "Level: " + d.info.level;
                 });
 
         node.select("circle")
@@ -856,7 +856,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
 
     // Compute radius for node - used more than 3 - placed in separated function
     function nodeRadius(d) {
-        return d._children ? Math.sqrt(d.descendantCount) + 6 : d.index === root.index ? 12 : d.children ? 4.5 : 6;
+        return d._children ? Math.sqrt(d.info.descendantCount) + 6 : d.index === root.index ? 12 : d.children ? 4.5 : 6;
     }
 
     // Toggle children.
@@ -1017,7 +1017,7 @@ function ZoomableCirclePacking(tree, svg) {
         pack = d3.layout.pack()
                 .padding(2)
                 .size([width, height])
-                .value(function(d) { return d.descendantCount; });
+                .value(function(d) { return d.info.descendantCount; });
         
         SVGGroup = svg.append('g')
                 .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
@@ -1059,7 +1059,7 @@ function ZoomableCirclePacking(tree, svg) {
                     return d.parent === root ? null : 'none';
                 })
                 .text(function (d) {
-                    return 'Desc cnt: ' + d.descendantCount;
+                    return 'Desc cnt: ' + d.info.descendantCount;
                 });
         
         zoomTo([root.x, root.y, root.r*2]);
