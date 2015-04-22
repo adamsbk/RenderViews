@@ -137,6 +137,7 @@ var GraphManager = (function () {
         function addStyles() {
             var style = $("<style>\n\
                       " + domQuery + " .graph { width: 100%; height: 100%; }\n\
+                      " + domQuery + " #levelInput { max-width: 50px; }\n\
                       " + domQuery + " .graph svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
@@ -452,7 +453,7 @@ function ForceCollapsibleForest(elem) {
         
         $(self.controls[0]).append($('\n\
             <div class="form-inline form-group form-group-sm">\n\
-                <label for="showSeedsInput">Show seeds</label>\n\
+                <label for="showSeedsInput">Visible</label>\n\
             </div>\n\
             ').append($('\
                 <select class="form-control" id="showSeedsInput" multiple>\n\
@@ -935,7 +936,8 @@ function ZoomableCirclePacking(tree, svg) {
     var seedID = tree.seedID;
     var color = null;
     var pack = null;
-    var focus = tree.root;
+    var root = tree.root;
+    var focus = root;
     var nodes = null;
     var node = null;
     var circle = null;
@@ -962,14 +964,13 @@ function ZoomableCirclePacking(tree, svg) {
         
         SVGGroup.style("background", color(-1))
                 .on("click", function () {
-                    zoom(tree.root);
+                    zoom(root);
                 });
         
         circle = SVGGroup.selectAll('circle');
         text = SVGGroup.selectAll('text');
         node = SVGGroup.selectAll('circle,text');
         
-        zoomTo([tree.root.x, tree.root.y, tree.root.r*2]);
     };
     
     this.remove = function() {
@@ -978,7 +979,7 @@ function ZoomableCirclePacking(tree, svg) {
     };
     
     this.update = function() {
-        nodes = pack.nodes(tree.root);
+        nodes = pack.nodes(root);
         
         circle
                 .data(nodes)
@@ -992,15 +993,16 @@ function ZoomableCirclePacking(tree, svg) {
                 .enter().append('text')
                 .attr('class', 'label')
                 .style('fill-opacity', function (d) {
-                    return d.parent === tree.root ? 1 : 0;
+                    return d.parent === root ? 1 : 0;
                 })
                 .style('display', function (d) {
-                    return d.parent === tree.root ? null : 'none';
+                    return d.parent === root ? null : 'none';
                 })
                 .text(function (d) {
                     return 'Desc cnt: ' + d.descendantCount;
                 });
         
+        zoomTo([root.x, root.y, root.r*2]);
     };
     
     function zoom(d) {
