@@ -962,7 +962,7 @@ function ZoomableCirclePacking(tree, svg) {
                 .on("click", function () {
                     zoom(tree.root);
                 });
-                
+        self.update();
         zoomTo([tree.root.x, tree.root.y, tree.root.r*2]);
     };
     
