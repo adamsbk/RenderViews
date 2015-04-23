@@ -1017,7 +1017,7 @@ function ZoomableCirclePacking(tree, svg) {
         pack = d3.layout.pack()
                 .padding(2)
                 .size([width, height])
-                .value(function(d) { return d.info.descendantCount; });
+                .value(function(d) { return 1000/*d.info.descendantCount*/; });
         
         SVGGroup = svg.append('g')
                 .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
