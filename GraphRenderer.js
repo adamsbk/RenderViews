@@ -147,6 +147,8 @@ var GraphManager = (function () {
                       .node .foreignObj .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
                       .node .foreignObj .node-info p { padding: 0; margin: 0; line-height: 1.2em; font-size: 1em; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
+                      \n\
+                      #CirclePacking .node.leaf {fill: white;}\n\
                       </style>");
             $('html > head').append(style);
         }
@@ -1044,7 +1046,7 @@ function ZoomableCirclePacking(tree, svg) {
         circle = SVGGroup.selectAll("circle")
                 .data(nodes)
                 .enter().append('circle')
-                .attr('class', function(d) { return 'node'; })
+                .attr('class', function(d) { return d.children ? "node" : "node leaf"; })
                 .style('fill', function(d) { return d.children ? color(d.depth) : null; })
                 .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
         
