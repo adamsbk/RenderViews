@@ -1041,14 +1041,14 @@ function ZoomableCirclePacking(tree, svg) {
     this.update = function() {
         nodes = pack.nodes(root);
         
-        circle
+        circle = SVGGroup.selectAll("circle")
                 .data(nodes)
                 .enter().append('circle')
                 .attr('class', function(d) { return 'node'; })
-                .style('fill', function(d) { return d.children ? '#00FFFF' : null; })
+                .style('fill', function(d) { return d.children ? color(d.depth) : null; })
                 .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
         
-        text
+        text = SVGGroup.selectAll('text')
                 .data(nodes)
                 .enter().append('text')
                 .attr('class', 'label')
@@ -1061,6 +1061,8 @@ function ZoomableCirclePacking(tree, svg) {
                 .text(function (d) {
                     return 'Desc cnt: ' + d.info.descendantCount;
                 });
+        
+        node = SVGGroup.selectAll('circle,text');
         
         zoomTo([root.x, root.y, root.r*2]);
     };
@@ -1098,10 +1100,10 @@ function ZoomableCirclePacking(tree, svg) {
     function zoomTo(v) {
         var k = width / v[2];
         view = v;
-        SVGGroup.selectAll('circle,text').attr("transform", function (d) {
+        node.attr("transform", function (d) {
             return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
         });
-        SVGGroup.selectAll('circle').attr("r", function (d) {
+        circle.attr("r", function (d) {
             return d.r * k;
         });
     }
