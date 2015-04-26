@@ -1120,6 +1120,16 @@ function ZoomableCirclePacking(tree, svg) {
         });
     }
     
+    this.interactionChanged = function(shapeID, newVal) {
+        if (!(shapeID in tree)) {
+            throw "There is no shape with shapeID `" + shapeID + "` to change interaction.";
+        }
+        var nodeWithShapeID = node.filter(function(d) { return d.shapeId === shapeID; });        
+        
+        //.attr('name', null) removes attribute `name` from element
+        nodeWithShapeID.attr("picked", newVal ? "yes" : null);
+    };
+    
     //node mouseenter, mouseleave
     function nodeMouseOver(d) {
         var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
