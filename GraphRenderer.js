@@ -191,6 +191,7 @@ var GraphManager = (function () {
                     "shapeId": shape.id,
                     "parentId": parent,
                     "info": { //added to object due to copy only reference - values (descendantCount,...) are computed later and memory save
+                        "ruleId": shape.relations.rule,
                         "level": isRoot ? 0 : seedObject[parent].info.level + 1,
                         "descendantCount": 0,
                         "leafCount": shape.relations.IsLeaf() ? 1 : 0
@@ -752,10 +753,10 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 //.attr("requiredExtensions", "http://www.w3.org/1999/xhtml") //chrome not working with this attribute
                 .attr("class", "foreignObj") //added class due to chrome does not create SVG foreignObject properly - it creates foreignobject and then it could not be selected with "foreignObject" selector - instead use class
                 .attr("width", 170)
-                .attr("height", "5em")
+                .attr("height", "6em")
                 .style("transform", function (d) {
                     var radius = nodeRadius(d);
-                    return "translate(" + (radius - .3 * radius) + "px, -2em)"; //x=right-30% from radius, y = 1.5em + .5em(padding)
+                    return "translate(" + (radius - .3 * radius) + "px, -3em)"; //x=right-30% from radius, y = 1.5em + .5em(padding)
                 });
 
         var bodyElem = foreignObject.append("xhtml:body");
@@ -774,6 +775,9 @@ function ForceCollapsibleTree(tree, svg, focus) {
                 });
         containerElem.append("xhtml:p").text(function (d) {
             return "Level: " + d.info.level;
+        });
+        containerElem.append("xhtml:p").text(function (d) {
+            return d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.ruleId;
         });
 
         var texts = switchElem.append("text")
