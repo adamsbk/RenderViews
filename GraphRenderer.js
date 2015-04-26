@@ -1029,6 +1029,7 @@ function ZoomableCirclePacking(tree, svg) {
         
         SVGGroup = svg.append('g')
                 .attr('seedID', tree.seedID)
+                .attr('class', 'hide')
                 .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
         
         SVGGroup.style("background", color(-1))
