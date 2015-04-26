@@ -777,7 +777,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
             return "Level: " + d.info.level;
         });
         containerElem.append("xhtml:p").text(function (d) {
-            return d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.ruleId;
+            return d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId;
         });
 
         var texts = switchElem.append("text")
