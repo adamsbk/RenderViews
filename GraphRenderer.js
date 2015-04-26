@@ -953,9 +953,12 @@ function ZoomableCircleForest(elem) {
     };
     
     self.addTree = function(tree) {   
-        self.count++;
         self.trees[tree.seedID] = new ZoomableCirclePacking(tree, self.svg);
-        $('#treeBySeed').append('<option value="'+ tree.seedID +'">Seed #'+ tree.seedID +'</option>');
+        $('#treeBySeed').append('<option value="'+ tree.seedID +'" '+ (self.count===0 ? 'selected':'') +'>Seed #'+ tree.seedID +'</option>');
+        if (self.count === 0) {
+            $('#treeBySeed').change();
+        }
+        self.count++;
     };
     
     self.removeTree = function(seedID) {
@@ -979,7 +982,10 @@ function ZoomableCircleForest(elem) {
                 <select class="form-control" id="treeBySeed">\n\
                 </select>\n\
                 ').change(function () {
-            alert($(this).val());
+            elem.selectAll('g[seedID]:not(.hide)')
+                    .classed('hide', 'true');
+            elem.select('g[seedID="'+ $(this).val() +'"]')
+                    .classed('hide', 'false');
         })));
     };
     
@@ -1022,6 +1028,7 @@ function ZoomableCirclePacking(tree, svg) {
                 .value(function(d) { return 1000/*d.info.descendantCount*/; });
         
         SVGGroup = svg.append('g')
+                .attr('seedID', tree.seedID)
                 .attr('transform', "translate(" + width/2 + "," +height/2+ ")");
         
         SVGGroup.style("background", color(-1))
@@ -1048,7 +1055,9 @@ function ZoomableCirclePacking(tree, svg) {
                 .enter().append('circle')
                 .attr('class', function(d) { return d.children ? "node" : "node leaf"; })
                 .style('fill', function(d) { return d.children ? color(d.depth) : null; })
-                .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+                .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
+                .on("mouseenter", nodeMouseOver)
+                .on("mouseleave", nodeMouseOver);
         
         text = SVGGroup.selectAll('text')
                 .data(nodes)
@@ -1108,6 +1117,27 @@ function ZoomableCirclePacking(tree, svg) {
         circle.attr("r", function (d) {
             return d.r * k;
         });
+    }
+    
+    //node mouseenter, mouseleave
+    function nodeMouseOver(d) {
+        var shape = SeedWidgets.Instances()[seedID].GetShape(d.shapeId);
+        if (shape) {
+            pickAllChildren(shape);
+        }
+    }
+    
+    function pickAllChildren(shape) {
+        if (shape.relations.IsLeaf()) {
+            shape.interaction.picked(!shape.interaction.picked());
+        } else if (shape.relations.children) {
+            shape.relations.children.forEach(function(shapeID){
+                var childShape = SeedWidgets.Instances()[seedID].GetShape(shapeID);
+                if (childShape instanceof ShapeNode) {
+                    pickAllChildren(childShape);
+                }
+            });
+        }
     }
     
     this.init();
