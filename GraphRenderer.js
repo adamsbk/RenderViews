@@ -982,10 +982,10 @@ function ZoomableCircleForest(elem) {
                 <select class="form-control" id="treeBySeed">\n\
                 </select>\n\
                 ').change(function () {
-            elem.selectAll('g[seedID]:not(.hide)')
-                    .classed('hide', 'true');
-            elem.select('g[seedID="'+ $(this).val() +'"]')
-                    .classed('hide', 'false');
+            self.svg.selectAll('g[seedID]:not(.hide)')
+                    .classed('hide', true);
+            self.svg.select('g[seedID="'+ $(this).val() +'"]')
+                    .classed('hide', false);
         })));
     };
     
