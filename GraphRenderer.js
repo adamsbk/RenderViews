@@ -634,6 +634,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
             var parentId = tree[shapeID].parentId;
             while ((parentId in tree) && nodeWithShapeID.empty()) {
                 nodeWithShapeID = node.filter(function(d) { return d.shapeId === parentId; });
+                parentId = tree[parentId].parentId;
             }
             nodeWithShapeID.attr("pickedHiddenDesc", newVal ? "yes" : null);
         } else {
