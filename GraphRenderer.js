@@ -141,6 +141,7 @@ var GraphManager = (function () {
                       " + domQuery + " .graph svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
+                      .node[pickedHiddenDesc=yes] circle { fill: orange !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
                       .node:hover text, .node:hover .foreignObj { display: block; }\n\
                       .node .foreignObj body { margin: 0; padding: 0; background-color: transparent; }\n\
@@ -629,10 +630,16 @@ function ForceCollapsibleTree(tree, svg, focus) {
         var nodeWithShapeID = node.filter(function(d) { return d.shapeId === shapeID; });
         
         //find first visible node (not clustered)
-        
-        
-        //.attr('name', null) removes attribute `name` from element
-        nodeWithShapeID.attr("picked", newVal ? "yes" : null);
+        if (nodeWithShapeID.empty()) {
+            var parentId = tree[shapeID].parentId;
+            while ((parentId in tree) && nodeWithShapeID.empty()) {
+                nodeWithShapeID = node.filter(function(d) { return d.shapeId === parentId; });
+            }
+            nodeWithShapeID.attr("pickedHiddenDesc", newVal ? "yes" : null);
+        } else {
+            //.attr('name', null) removes attribute `name` from element
+            nodeWithShapeID.attr("picked", newVal ? "yes" : null);
+        }
     };
     
     this.hideNodes = function(level) {
