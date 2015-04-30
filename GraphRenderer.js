@@ -642,7 +642,7 @@ function ForceCollapsibleTree(tree, svg, focus) {
             nodeWithShapeID.attr("pickedHiddenDesc", "yes");
         }
         if (!newVal) {
-            node.select('[pickedHiddenDesc=yes]').attr("pickedHiddenDesc", null);
+            node.filter('[pickedHiddenDesc=yes]').attr("pickedHiddenDesc", null);
         }
     };
     
