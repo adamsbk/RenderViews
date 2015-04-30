@@ -629,17 +629,20 @@ function ForceCollapsibleTree(tree, svg, focus) {
         }
         var nodeWithShapeID = node.filter(function(d) { return d.shapeId === shapeID; });
         
-        //find first visible node (not clustered)
-        if (nodeWithShapeID.empty()) {
+        if (!nodeWithShapeID.empty()) {
+            //.attr('name', null) removes attribute `name` from element
+            nodeWithShapeID.attr("picked", newVal ? "yes" : null);
+        } else if (newVal) {
+            //find first visible node (not clustered)
             var parentId = tree[shapeID].parentId;
             while ((parentId in tree) && nodeWithShapeID.empty()) {
                 nodeWithShapeID = node.filter(function(d) { return d.shapeId === parentId; });
                 parentId = tree[parentId].parentId;
             }
-            nodeWithShapeID.attr("pickedHiddenDesc", newVal ? "yes" : null);
-        } else {
-            //.attr('name', null) removes attribute `name` from element
-            nodeWithShapeID.attr("picked", newVal ? "yes" : null);
+            nodeWithShapeID.attr("pickedHiddenDesc", "yes");
+        }
+        if (!newVal) {
+            node.select('[pickedHiddenDesc=yes]').attr("pickedHiddenDesc", null);
         }
     };
     
