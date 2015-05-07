@@ -163,10 +163,10 @@
         }.bind(self));
 
         //Add the subscription to the subscriptions map for the given shape, note that again we use an object to possibly store several subscriptions per shape
-        if (id in this.Subscriptions)
-            this.Subscriptions[id].pick = pickSubscription;
+        if (id in this.ShapeSubscriptions)
+            this.ShapeSubscriptions[id].pick = pickSubscription;
         else
-            this.Subscriptions[id] = { pick: pickSubscription };
+            this.ShapeSubscriptions[id] = { pick: pickSubscription };
 
         //TODO STUDENTS add subscriptions to other shape properties in a similar way
     }
@@ -177,11 +177,11 @@
     self.removeCalls.push(function (shape) {
         //very similar to RemoveSeedSubscription
         var id = shape.id;
-        if (id in this.Subscriptions) {
-            for (t in this.Subscriptions[id])
-                this.Subscriptions[id][t].dispose();
+        if (id in this.ShapeSubscriptions) {
+            for (t in this.ShapeSubscriptions[id])
+                this.ShapeSubscriptions[id][t].dispose();
 
-            delete this.Subscriptions[id];
+            delete this.ShapeSubscriptions[id];
         }        
     });
 
