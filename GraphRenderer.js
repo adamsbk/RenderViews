@@ -49,11 +49,11 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         
         //remove picking subscription
         var id = shape.id;
-        if (id in this.Subscriptions) {
-            for (var t in this.Subscriptions[id])
-                this.Subscriptions[id][t].dispose();
+        if (id in this.ShapeSubscriptions) {
+            for (var t in this.ShapeSubscriptions[id])
+                this.ShapeSubscriptions[id][t].dispose();
 
-            delete this.Subscriptions[id];
+            delete this.ShapeSubscriptions[id];
         }   
         
         self.graphManager.removeShape(shape);
@@ -70,10 +70,10 @@ function GraphRenderer(domQuery) { //for a whole window call with domQuery "<bod
         }.bind(self));
         
         //adding subscription to object to make it possible to store multiple subscriptions per shape
-        if (id in this.Subscriptions)
-            this.Subscriptions[id].pick = pickSubscription;
+        if (id in this.ShapeSubscriptions)
+            this.ShapeSubscriptions[id].pick = pickSubscription;
         else
-            this.Subscriptions[id] = {pick: pickSubscription};
+            this.ShapeSubscriptions[id] = {pick: pickSubscription};
     });
 
     return self;
