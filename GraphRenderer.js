@@ -361,7 +361,8 @@ function AbstractForest(elem) {
         //delete removes only reference so treeNodes[seed].root should keep reference to object if treeNodes[seed][shape.id] === treeNodes[seed].root
         //instead delete could be assigned undefined - faster
         delete tree[shapeID];
-        if (tree.root !== undefined && tree.root.shapeId === shapeID) { //if this shape is parent shape
+        console.log(tree.root.id +' - '+ shapeID +' - '+ tree.root.shapeId);
+        if (tree.root !== undefined && tree.root.id === shapeID) { //if this shape is parent shape
             console.log("root reference was deleted successfuly");
             result.removeTree(seedID);
             delete tree.root;
