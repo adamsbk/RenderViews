@@ -141,7 +141,7 @@ var GraphManager = (function () {
                       " + domQuery + " .graph svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
                       .node[picked=yes] circle { fill: red !important; }\n\
-                      .node[pickedHiddenDesc=yes] circle { fill: #ff9999 !important; }\n\
+                      .node[pickedHiddenDesc=yes] circle { fill: #ff4d4d !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
                       .node:hover text, .node:hover .foreignObj { display: block; }\n\
                       .node .foreignObj body { margin: 0; padding: 0; background-color: transparent; }\n\
