@@ -154,6 +154,21 @@ var GraphManager = (function () {
             $('html > head').append(style);
         }
         
+        function addSwitchButtons() {
+            var buttons = $('<div class="btn-group"></div>');
+            for (var graphKey in graphTypes) {
+                if (graphTypes.hasOwnProperty(graphKey)) {
+                    buttons.append( $('<a href="#" class="btn btn-sm" data-graph-button="'+ graphKey +'">'+ graphTypes[graphKey] +'</a>').click(function(event) {
+                        event.preventDefault();
+                        $(domQuery + ' [data-graph-button].active').removeClass('active');
+                        $(this).addClass('active');
+                        instance.viewGraph(graphKey);
+                    }) );
+                }
+            }
+            $(domQuery).append(buttons);
+        }
+        
         /*function addAutoSVGResize() {
             $(window).resize(function () {
                 if (currentGraph === undefined) return;
