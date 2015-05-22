@@ -118,6 +118,8 @@ var GraphManager = (function () {
         
         var currentGraph = graphs[graphTypes.ForceCollapsible];
         
+        addSwitchButtons();
+        
         function addToDOM() {
             /*d3.select(domQuery).append('button')
              .attr('id', 'showInPopup')
