@@ -164,7 +164,7 @@ var GraphManager = (function () {
                         event.preventDefault();
                         $(domQuery + ' [data-graph-button].active').removeClass('active');
                         $(this).addClass('active');
-                        instance.viewGraph(graphKey);
+                        instance.viewGraph($(this).data('graph-button'));
                     }) );
                 }
             }
