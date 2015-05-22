@@ -157,15 +157,17 @@ var GraphManager = (function () {
         }
         
         function addSwitchButtons() {
+            function buttonEvent(event) {
+                event.preventDefault();
+                $(domQuery + ' [data-graph-button].active').removeClass('active');
+                $(this).addClass('active');
+                instance.viewGraph($(this).data('graph-button'));
+            }
+            
             var buttons = $('<div class="btn-group"></div>');
             for (var graphKey in graphTypes) {
                 if (graphTypes.hasOwnProperty(graphKey)) {
-                    buttons.append( $('<a href="#" class="btn btn-sm" data-graph-button="'+ graphKey +'">'+ graphTypes[graphKey] +'</a>').click(function(event) {
-                        event.preventDefault();
-                        $(domQuery + ' [data-graph-button].active').removeClass('active');
-                        $(this).addClass('active');
-                        instance.viewGraph($(this).data('graph-button'));
-                    }) );
+                    buttons.append( $('<a href="#" class="btn btn-default btn-sm" data-graph-button="'+ graphKey +'">'+ graphTypes[graphKey] +'</a>').click(buttonEvent) );
                 }
             }
             $(domQuery).append(buttons);
@@ -1078,6 +1080,18 @@ function ZoomableCirclePacking(tree, svg) {
     this.remove = function() {
         //SVGGroup == svg.select('g[seedID="' + seedID + '"]')
         SVGGroup.remove();
+    };
+    
+    /**
+     * Updates with delay. Then called more times it executes only last delay
+     * Optimization for adding nodes in the start/restart of app
+     * 
+     * @returns {undefined}
+     */
+    this.timeoutId = 0;
+    this.updateWithDelay = function() {
+        clearTimeout(self.timeoutId);
+        self.timeoutId = setTimeout(self.update, 400);
     };
     
     this.update = function() {
