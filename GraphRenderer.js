@@ -1040,7 +1040,7 @@ function ZoomableCirclePacking(tree, svg) {
     var seedID = tree.seedID;
     var color = null;
     var pack = null;
-    var root = tree;
+    var root = tree.root;
     var focus = root;
     var nodes = null;
     var node = null;
