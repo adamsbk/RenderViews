@@ -1124,7 +1124,7 @@ function ZoomableCirclePacking(tree, svg) {
         
         node = SVGGroup.selectAll('circle,text');
         
-        //zoomTo([root.x, root.y, root.r*2]);
+        zoomTo([root.x, root.y, root.r*2]);
     };
     
     function zoom(d) {
