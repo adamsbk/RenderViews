@@ -300,7 +300,7 @@ var GraphManager = (function () {
             },
             publicProperty: "I am also public",
             publicTreeNodes: treeNodes,
-            publicCurrentGraph: currentGraph
+            publicCPGraph: graphs[graphTypes.CirclePacking]
         };
 
     }
