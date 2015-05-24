@@ -159,6 +159,8 @@ var GraphManager = (function () {
         function addSwitchButtons() {
             function buttonEvent(event) {
                 event.preventDefault();
+                if ($('this').hasClass('active')) return;
+                
                 $(domQuery + ' [data-graph-button].active').removeClass('active');
                 $(this).addClass('active');
                 instance.viewGraph($(this).data('graph-button'));
@@ -167,7 +169,7 @@ var GraphManager = (function () {
             var buttons = $('<div class="btn-group"></div>');
             for (var graphKey in graphTypes) {
                 if (graphTypes.hasOwnProperty(graphKey)) {
-                    buttons.append( $('<a href="#" class="btn btn-default btn-sm" data-graph-button="'+ graphKey +'">'+ graphTypes[graphKey] +'</a>').click(buttonEvent) );
+                    buttons.append( $('<a href="#" class="btn btn-default btn-sm '+ (graphTypes[graphKey] === graphTypes['ForceCollapsible'] ? 'active' : '') +'" data-graph-button="'+ graphKey +'">'+ graphTypes[graphKey] +'</a>').click(buttonEvent) );
                 }
             }
             $(domQuery).append(buttons);
@@ -403,7 +405,7 @@ function AbstractForest(elem) {
     };
     
     result.show = function() {
-        result.updateEachTree();
+        //result.updateEachTree();
         result.elem.classed('hide', false);
         //when element is styled "display:none" its dimensions are 0 (at least in FF) so when visible
         $(window).resize();
@@ -584,7 +586,7 @@ function ForceCollapsibleForest(elem) {
     return self;
 }
 
-function ForceCollapsibleTree(tree, svg, focus) {
+function ForceCollapsibleTree(tree, svg/*, focus*/) {
     
     var self = this;
     
