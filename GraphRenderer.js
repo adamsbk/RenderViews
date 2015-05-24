@@ -405,7 +405,7 @@ function AbstractForest(elem) {
     };
     
     result.show = function() {
-        //result.updateEachTree();
+        result.updateEachTree();
         result.elem.classed('hide', false);
         //when element is styled "display:none" its dimensions are 0 (at least in FF) so when visible
         $(window).resize();
