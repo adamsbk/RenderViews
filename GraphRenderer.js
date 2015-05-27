@@ -1101,9 +1101,6 @@ function ZoomableCirclePacking(tree, svg) {
         
         circle = SVGGroup
                 .selectAll("circle")
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; })
-                .attr("r", function(d) { return d.r; })
                 .data(nodes)
                 .enter().append('circle')
                 .attr('class', function(d) { return d.children ? "node" : "node leaf"; })
@@ -1128,7 +1125,7 @@ function ZoomableCirclePacking(tree, svg) {
         
         node = SVGGroup.selectAll('circle,text');
         
-        zoomTo([root.x, root.y, root.r*2]);
+        //zoomTo([root.x, root.y, root.r*2]);
     };
     
     function zoom(d) {
