@@ -146,9 +146,9 @@ var GraphManager = (function () {
                       .node[pickedHiddenDesc=yes] circle { fill: #ff4d4d !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
                       .node:hover text, .node:hover .foreignObj { display: block; }\n\
-                      .node .foreignObj body { margin: 0; padding: 0; background-color: transparent; }\n\
-                      .node .foreignObj .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
-                      .node .foreignObj .node-info p { padding: 0; margin: 0; line-height: 1.2em; font-size: 1em; }\n\
+                      .foreignObj body { margin: 0; padding: 0; background-color: transparent; }\n\
+                      .foreignObj .node-info { background-color: #eee; padding: .5em; border: thin solid #ccc; border-radius: 4px; }\n\
+                      .foreignObj .node-info p { padding: 0; margin: 0; line-height: 1.2em; font-size: 1em; }\n\
                       .link { fill: none; stroke: #9ecae1; stroke-width: 1.5px; }\n\
                       \n\
                       #CirclePacking .node.leaf {fill: white;}\n\
@@ -1223,10 +1223,8 @@ function ZoomableCirclePacking(tree, svg) {
     }
     
     function mouseMove(d) {
-        tooltip.style("transform", function () {
-            var coordinates = d3.mouse(this);
-                    return "translate(" + coordinates[0] + ", " + coordinates[1] + ")";
-                });
+        var coordinates = d3.mouse(this);
+        tooltip.style("transform", "translate(" + coordinates[0] + ", " + coordinates[1] + ")");
     }
     
     //node mouseenter, mouseleave
