@@ -1052,6 +1052,7 @@ function ZoomableCirclePacking(tree, svg) {
     var view = null;
     var SVGGroup = null;
     var tooltip = null;
+    var tooltipIn = null;
     
     var initUpdate = false;
     
@@ -1083,11 +1084,12 @@ function ZoomableCirclePacking(tree, svg) {
         text = SVGGroup.selectAll('text');
         node = SVGGroup.selectAll('circle,text');
         
-        var tooltip = svg.append("foreignObject")
+        tooltip = svg.append("foreignObject")
                 .attr("class", "foreignObj")
                 .attr("width", 170)
-                .attr("height", "6em")
-                .append("xhtml:body")
+                .attr("height", "6em");
+        
+        tooltipIn = tooltip.append("xhtml:body")
                 .append("xhtml:div")
                 .attr("class", "node-info");
     };
@@ -1200,20 +1202,20 @@ function ZoomableCirclePacking(tree, svg) {
         tooltip.remove();
         
         mouseMove(d);
-        tooltip.append("xhtml:p")
+        tooltipIn.append("xhtml:p")
                 .attr("class", "descendantCount")
                 .text(function (d) {
                     return "Descendant count: " + d.info.descendantCount;
                 });
-        tooltip.append("xhtml:p")
+        tooltipIn.append("xhtml:p")
                 .attr("class", "leafCount")
                 .text(function (d) {
                     return "Leaf count: " + d.info.leafCount;
                 });
-        tooltip.append("xhtml:p").text(function (d) {
+        tooltipIn.append("xhtml:p").text(function (d) {
             return "Level: " + d.info.level;
         });
-        tooltip.append("xhtml:p").text(function (d) {
+        tooltipIn.append("xhtml:p").text(function (d) {
             return d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId;
         });
         
