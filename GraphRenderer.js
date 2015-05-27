@@ -1206,20 +1206,12 @@ function ZoomableCirclePacking(tree, svg) {
         mouseMove(d);
         tooltipIn.append("xhtml:p")
                 .attr("class", "descendantCount")
-                .text(function (d) {
-                    return "Descendant count: " + d.info.descendantCount;
-                });
+                .text("Descendant count: " + d.info.descendantCount);
         tooltipIn.append("xhtml:p")
                 .attr("class", "leafCount")
-                .text(function (d) {
-                    return "Leaf count: " + d.info.leafCount;
-                });
-        tooltipIn.append("xhtml:p").text(function (d) {
-            return "Level: " + d.info.level;
-        });
-        tooltipIn.append("xhtml:p").text(function (d) {
-            return d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId;
-        });
+                .text("Leaf count: " + d.info.leafCount);
+        tooltipIn.append("xhtml:p").text("Level: " + d.info.level);
+        tooltipIn.append("xhtml:p").text(d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId);
         
         tooltip.classed('hide', false);
     }
