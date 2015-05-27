@@ -437,6 +437,9 @@ function AbstractForest(elem) {
     //self invoking function - call only once to provide auto svg resize
     (function() {
         $(window).resize(function () {
+            if (result.elem.classed('hide')) {
+                return;
+            }
             var boundingRect = result.elem.node().getBoundingClientRect();
             result.svg
                     .attr("width", boundingRect.width)
@@ -1110,8 +1113,8 @@ function ZoomableCirclePacking(tree, svg) {
                 .on("mouseenter", nodeMouseOver)
                 .on("mouseleave", nodeMouseOver);
         
-        text = SVGGroup.selectAll('text')
-                .data(nodes, function(d) { return d.id })
+        /*text = SVGGroup.selectAll('text')
+                .data(nodes, function(d) { return d.id; })
                 .enter().append('text')
                 .attr('class', 'label')
                 .style('fill-opacity', function (d) {
@@ -1122,7 +1125,7 @@ function ZoomableCirclePacking(tree, svg) {
                 })
                 .text(function (d) {
                     return 'Desc cnt: ' + d.info.descendantCount;
-                });
+                });*/
         
         node = SVGGroup.selectAll('circle,text');
         
