@@ -1048,6 +1048,7 @@ function ZoomableCirclePacking(tree, svg) {
     var text = null;
     var view = null;
     var SVGGroup = null;
+    var initUpdate = false;
     
     var width = 300;//svg.attr('width');
     var height = 300;//svg.attr('height');
@@ -1125,7 +1126,10 @@ function ZoomableCirclePacking(tree, svg) {
         
         node = SVGGroup.selectAll('circle,text');
         
-        //zoomTo([root.x, root.y, root.r*2]);
+        if (!initUpdate) {
+            zoomTo([root.x, root.y, root.r*2]);
+            initUpdate = true;
+        }
     };
     
     function zoom(d) {
