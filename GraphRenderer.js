@@ -1123,7 +1123,7 @@ function ZoomableCirclePacking(tree, svg) {
                 .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
                 .on("mouseenter", nodeMouseEnter)
                 .on("mouseleave", nodeMouseLeave)
-                .on("mousemove", mouseMove);
+                .on("mouseover", mouseMove);
         
         /*text = SVGGroup.selectAll('text')
                 .data(nodes, function(d) { return d.id; })
