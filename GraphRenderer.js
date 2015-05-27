@@ -1099,7 +1099,11 @@ function ZoomableCirclePacking(tree, svg) {
     this.update = function() {
         nodes = pack.nodes(root);
         
-        circle = SVGGroup.selectAll("circle")
+        circle = SVGGroup
+                .selectAll("circle")
+                .attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; })
+                .attr("r", function(d) { return d.r; })
                 .data(nodes)
                 .enter().append('circle')
                 .attr('class', function(d) { return d.children ? "node" : "node leaf"; })
