@@ -1085,7 +1085,7 @@ function ZoomableCirclePacking(tree, svg) {
         node = SVGGroup.selectAll('circle,text');
         
         tooltip = svg.append("foreignObject")
-                .attr("class", "foreignObj")
+                .attr("class", "foreignObj hide")
                 .attr("width", 170)
                 .attr("height", "6em");
         
@@ -1231,9 +1231,9 @@ function ZoomableCirclePacking(tree, svg) {
     }
     
     function mouseMove(d) {
-        tooltip.style("transform", function (d) {
+        tooltip.style("transform", function () {
             var coordinates = d3.mouse(this);
-                    return "translate(" + coordinates[0] + ", " + coordinates[1] + ")"; //x=right-30% from radius, y = 1.5em + .5em(padding)
+                    return "translate(" + coordinates[0] + ", " + coordinates[1] + ")";
                 });
     }
     
