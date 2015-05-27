@@ -1117,7 +1117,7 @@ function ZoomableCirclePacking(tree, svg) {
         circle = circle.data(nodes, function(d) { return d.id; });
         circle.exit().remove();
         
-        var circleEnter = circle.enter().append('circle')
+        circle.enter().append('circle')
                 .attr('class', function(d) { return d.children ? "node" : "node leaf"; })
                 .style('fill', function(d) { return d.children ? color(d.depth) : null; })
                 .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
@@ -1222,7 +1222,7 @@ function ZoomableCirclePacking(tree, svg) {
     }
     
     function mouseMove(d) {
-        var coordinates = d3.mouse(svg);
+        var coordinates = d3.mouse(svg.node());
         tooltip.attr("transform", "translate(" + coordinates[0] + ", " + coordinates[1] + ")");
     }
     
