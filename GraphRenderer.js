@@ -1232,7 +1232,8 @@ function ZoomableCirclePacking(tree, svg) {
     
     function mouseMove(d) {
         tooltip.style("transform", function (d) {
-                    return "translate(" + d3.mouse(svg) + ")"; //x=right-30% from radius, y = 1.5em + .5em(padding)
+            var coordinates = d3.mouse(this);
+                    return "translate(" + coordinates[0] + ", " + coordinates[1] + ")"; //x=right-30% from radius, y = 1.5em + .5em(padding)
                 });
     }
     
