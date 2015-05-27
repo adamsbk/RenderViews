@@ -1210,7 +1210,7 @@ function ZoomableCirclePacking(tree, svg) {
                 .attr("class", "leafCount")
                 .text("Leaf count: " + d.info.leafCount);
         tooltipIn.append("xhtml:p").text("Level: " + d.info.level);
-        tooltipIn.append("xhtml:p").text(d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId);
+        tooltipIn.append("xhtml:p").text(d.id === root.id ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId);
         
         tooltip.classed('hide', false);
     }
