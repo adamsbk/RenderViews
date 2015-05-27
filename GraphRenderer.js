@@ -142,7 +142,7 @@ var GraphManager = (function () {
                       " + domQuery + " #levelInput { max-width: 50px; }\n\
                       " + domQuery + " .graph svg { overflow: visible; width: 100%; height: 100%; }\n\
                       .node circle { cursor: pointer; /*stroke: #3182bd;*/ stroke-width: 1.5px; }\n\
-                      .node[picked=yes] circle { fill: red !important; }\n\
+                      .node[picked=yes] circle, circle[picked=yes] { fill: red !important; }\n\
                       .node[pickedHiddenDesc=yes] circle { fill: #ff4d4d !important; }\n\
                       .node text, .node .foreignObj { display: none; }\n\
                       .node:hover text, .node:hover .foreignObj { display: block; }\n\
@@ -1223,8 +1223,7 @@ function ZoomableCirclePacking(tree, svg) {
     
     function mouseMove(d) {
         var coordinates = d3.mouse(this);
-        console.log(coordinates);
-        tooltip.style("transform", "translate(" + coordinates[0] + ", " + coordinates[1] + ")");
+        tooltip("transform", "translate(" + coordinates[0] + ", " + coordinates[1] + ")");
     }
     
     //node mouseenter, mouseleave
