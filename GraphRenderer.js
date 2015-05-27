@@ -1199,7 +1199,9 @@ function ZoomableCirclePacking(tree, svg) {
     };
     
     function nodeMouseEnter(d) {
-        tooltip.remove();
+        nodeMouseOver(d);
+        
+        tooltipIn.selectAll('p').remove();
         
         mouseMove(d);
         tooltipIn.append("xhtml:p")
@@ -1220,13 +1222,12 @@ function ZoomableCirclePacking(tree, svg) {
         });
         
         tooltip.classed('hide', false);
-        
-        nodeMouseOver(d);
     }
     
     function nodeMouseLeave(d) {
-        tooltip.classed('hide', true);
         nodeMouseOver(d);
+        
+        tooltip.classed('hide', true);
     }
     
     function mouseMove(d) {
