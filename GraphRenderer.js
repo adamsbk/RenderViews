@@ -1203,7 +1203,6 @@ function ZoomableCirclePacking(tree, svg) {
         
         tooltipIn.selectAll('p').remove();
         
-        mouseMove(d);
         tooltipIn.append("xhtml:p")
                 .attr("class", "descendantCount")
                 .text("Descendant count: " + d.info.descendantCount);
