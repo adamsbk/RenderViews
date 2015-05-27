@@ -1051,6 +1051,8 @@ function ZoomableCirclePacking(tree, svg) {
     var text = null;
     var view = null;
     var SVGGroup = null;
+    var tooltip = null;
+    
     var initUpdate = false;
     
     var width = 300;//svg.attr('width');
@@ -1081,6 +1083,13 @@ function ZoomableCirclePacking(tree, svg) {
         text = SVGGroup.selectAll('text');
         node = SVGGroup.selectAll('circle,text');
         
+        var tooltip = svg.append("foreignObject")
+                .attr("class", "foreignObj")
+                .attr("width", 170)
+                .attr("height", "6em")
+                .append("xhtml:body")
+                .append("xhtml:div")
+                .attr("class", "node-info");
     };
     
     this.remove = function() {
@@ -1110,8 +1119,9 @@ function ZoomableCirclePacking(tree, svg) {
                 .attr('class', function(d) { return d.children ? "node" : "node leaf"; })
                 .style('fill', function(d) { return d.children ? color(d.depth) : null; })
                 .on('click', function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
-                .on("mouseenter", nodeMouseOver)
-                .on("mouseleave", nodeMouseOver);
+                .on("mouseenter", nodeMouseEnter)
+                .on("mouseleave", nodeMouseLeave)
+                .on("mousemove", mouseMove);
         
         /*text = SVGGroup.selectAll('text')
                 .data(nodes, function(d) { return d.id; })
@@ -1185,6 +1195,43 @@ function ZoomableCirclePacking(tree, svg) {
         //.attr('name', null) removes attribute `name` from element
         nodeWithShapeID.attr("picked", newVal ? "yes" : null);
     };
+    
+    function nodeMouseEnter(d) {
+        tooltip.remove();
+        
+        mouseMove(d);
+        tooltip.append("xhtml:p")
+                .attr("class", "descendantCount")
+                .text(function (d) {
+                    return "Descendant count: " + d.info.descendantCount;
+                });
+        tooltip.append("xhtml:p")
+                .attr("class", "leafCount")
+                .text(function (d) {
+                    return "Leaf count: " + d.info.leafCount;
+                });
+        tooltip.append("xhtml:p").text(function (d) {
+            return "Level: " + d.info.level;
+        });
+        tooltip.append("xhtml:p").text(function (d) {
+            return d.index === root.index ? "Seed #" + seedID : "Created by rule #" + d.info.ruleId;
+        });
+        
+        tooltip.classed('hide', false);
+        
+        nodeMouseOver(d);
+    }
+    
+    function nodeMouseLeave(d) {
+        tooltip.classed('hide', true);
+        nodeMouseOver(d);
+    }
+    
+    function mouseMove(d) {
+        tooltip.style("transform", function (d) {
+                    return "translate(" + d3.mouse(svg) + ")"; //x=right-30% from radius, y = 1.5em + .5em(padding)
+                });
+    }
     
     //node mouseenter, mouseleave
     function nodeMouseOver(d) {
