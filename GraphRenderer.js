@@ -452,6 +452,12 @@ function AbstractForest(elem) {
     return result;
 }
 
+/**
+ * Derived by AbstractForest
+ * 
+ * @param {type} elem svg element
+ * @returns {ForceCollapsibleForest.self|AbstractForest.result}
+ */
 function ForceCollapsibleForest(elem) {
     
     var self = AbstractForest(elem);
@@ -589,6 +595,13 @@ function ForceCollapsibleForest(elem) {
     return self;
 }
 
+/**
+ * Single tree visualisation
+ * 
+ * @param {type} tree data representation
+ * @param {type} svg svg element where the tree is added
+ * @returns {ForceCollapsibleTree}
+ */
 function ForceCollapsibleTree(tree, svg/*, focus*/) {
     
     var self = this;
@@ -851,14 +864,6 @@ function ForceCollapsibleTree(tree, svg/*, focus*/) {
 
     function tick() {
 
-        //node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
-        //.attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
-        /*node.attr("transform", function (d) {
-            var radius = nodeRadius(d);
-            var cx = Math.max(radius, Math.min(width - radius, d.x));
-            var cy = Math.max(radius, Math.min(height - radius, d.y));
-            return "translate(" + cx + "," + cy + ")";
-        });*/
         node.selectAll("circle").attr("cx", function (d) {
             var radius = nodeRadius(d);
             return d.x = Math.max(radius, Math.min(width - radius, d.x));
@@ -983,6 +988,12 @@ function ForceCollapsibleTree(tree, svg/*, focus*/) {
     this.init();
 }
 
+/**
+ * Derived by AbstractForest
+ * 
+ * @param {type} elem element where the visualisation is placed
+ * @returns {ZoomableCircleForest.self|AbstractForest.result}
+ */
 function ZoomableCircleForest(elem) {
     
     var self = AbstractForest(elem);
@@ -1034,6 +1045,13 @@ function ZoomableCircleForest(elem) {
     
 }
 
+/**
+ * Tree visualisation using Packing Layout
+ * 
+ * @param {type} tree data representation
+ * @param {type} svg tree is placed there
+ * @returns {ZoomableCirclePacking}
+ */
 function ZoomableCirclePacking(tree, svg) {
     
     var self = this;
@@ -1124,20 +1142,6 @@ function ZoomableCirclePacking(tree, svg) {
                 .on("mouseenter", nodeMouseEnter)
                 .on("mouseleave", nodeMouseLeave)
                 .on("mousemove", mouseMove);
-        
-        /*text = SVGGroup.selectAll('text')
-                .data(nodes, function(d) { return d.id; })
-                .enter().append('text')
-                .attr('class', 'label')
-                .style('fill-opacity', function (d) {
-                    return d.parent === root ? 1 : 0;
-                })
-                .style('display', function (d) {
-                    return d.parent === root ? null : 'none';
-                })
-                .text(function (d) {
-                    return 'Desc cnt: ' + d.info.descendantCount;
-                });*/
         
         node = SVGGroup.selectAll('circle,text');
         
